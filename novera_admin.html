@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Novera Admin Panel</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1A3A5C;--navy-d:#0F2340;--orange:#E05E2A;--orange-h:#F47A48;
+  --bg:#F0F4F8;--surface:#fff;--border:#D8E2EE;
+  --text:#1A3A5C;--muted:#6A8EAE;--label:#3A5A7C;
+  --accent:var(--orange);
+}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text)}
+
+/* SETUP SCREEN */
+#setup{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100vh;gap:24px;text-align:center;padding:20px}
+.setup-logo{width:64px;height:64px;background:var(--orange);border-radius:14px;
+  display:flex;align-items:center;justify-content:center;font-size:28px;
+  font-weight:900;color:#fff;margin:0 auto 8px}
+.setup-title{font-size:22px;font-weight:700;color:var(--navy)}
+.setup-sub{color:var(--muted);font-size:14px;max-width:380px;line-height:1.6}
+.btn-setup{background:var(--orange);color:#fff;border:none;padding:14px 32px;
+  border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;
+  transition:background .2s;display:flex;align-items:center;gap:8px}
+.btn-setup:hover{background:var(--orange-h)}
+.setup-note{font-size:12px;color:var(--muted);max-width:380px;line-height:1.5;
+  background:rgba(26,58,92,.06);padding:10px 16px;border-radius:6px}
+#setupErr{color:#C0392B;font-size:13px;display:none}
+
+/* APP */
+#app{display:none;height:100vh;flex-direction:row}
+#app.on{display:flex}
+
+/* SIDEBAR */
+aside{width:230px;min-width:230px;background:var(--navy-d);display:flex;
+  flex-direction:column;overflow-y:auto;flex-shrink:0}
+.brand{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;gap:10px}
+.brand-icon{width:30px;height:30px;background:var(--orange);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  font-weight:900;color:#fff;flex-shrink:0}
+.brand-name{color:#fff;font-size:13px;font-weight:700;letter-spacing:.05em}
+.brand-sub{color:rgba(255,255,255,.35);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+nav{flex:1;padding:10px 0}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 16px;cursor:pointer;
+  border-left:3px solid transparent;transition:all .15s;
+  color:rgba(255,255,255,.5);font-size:13px;user-select:none}
+.nav-item:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.8)}
+.nav-item.active{background:rgba(255,255,255,.08);color:#fff;border-left-color:var(--orange);font-weight:500}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:.5}
+.nav-item.active .nav-dot{opacity:1;background:var(--orange)}
+.sidebar-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,.07);
+  color:rgba(255,255,255,.25);font-size:10.5px;line-height:1.5}
+
+/* MAIN */
+main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 22px;height:56px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px}
+.hdr-left{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);min-width:0}
+.hdr-left b{color:var(--text);font-weight:600;white-space:nowrap}
+.hdr-sep{color:var(--border);flex-shrink:0}
+.hdr-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.content{flex:1;overflow-y:auto;padding:22px}
+.page-grid{display:grid;gap:16px;max-width:1060px}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 15px;border-radius:6px;
+  border:none;cursor:pointer;font-size:12.5px;font-weight:600;transition:all .15s;
+  text-decoration:none;line-height:1;font-family:inherit}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-primary:hover:not(:disabled){background:var(--orange-h)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--navy);border:1.5px solid var(--border);font-weight:500}
+.btn-ghost:hover{border-color:var(--navy)}
+.btn-open{background:rgba(26,58,92,.07);color:var(--navy);border:none;font-weight:500}
+.btn-open:hover{background:rgba(26,58,92,.12)}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  box-shadow:0 1px 8px rgba(26,58,92,.06);overflow:hidden}
+.card-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;
+  align-items:center;background:#FAFBFD}
+.card-title{font-size:11px;font-weight:700;color:var(--label);text-transform:uppercase;
+  letter-spacing:.08em;display:flex;align-items:center;gap:7px}
+.card-bar{width:3px;height:12px;border-radius:2px;background:var(--accent);flex-shrink:0}
+.card-body{padding:16px}
+
+/* FORM */
+.field{margin-bottom:13px}
+.field:last-child{margin-bottom:0}
+label{display:block;font-size:11px;font-weight:600;color:var(--label);
+  margin-bottom:5px;letter-spacing:.02em}
+input[type=text],textarea{width:100%;padding:8px 10px;border:1.5px solid var(--border);
+  border-radius:6px;font-size:13px;color:var(--text);background:#fff;
+  font-family:inherit;transition:border-color .15s;resize:vertical}
+input[type=text]:focus,textarea:focus{outline:none;border-color:var(--navy)}
+textarea{min-height:70px;line-height:1.6}
+.hint{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5}
+.field.changed input,.field.changed textarea{border-color:var(--orange)}
+
+/* GRIDS */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.svc-item,.stat-item{border:1.5px solid var(--border);border-radius:7px;
+  padding:11px 13px;background:var(--bg)}
+.item-badge{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.08em;margin-bottom:7px}
+
+/* STATUS */
+.dirty-badge{display:none;background:var(--orange);color:#fff;font-size:11px;
+  padding:2px 8px;border-radius:20px;font-weight:600}
+.dirty-badge.on{display:inline-flex}
+.empty{text-align:center;padding:70px 20px;color:var(--muted)}
+.empty-icon{font-size:36px;margin-bottom:10px;opacity:.35}
+.loading{display:flex;align-items:center;justify-content:center;height:160px;
+  color:var(--muted);font-size:13px;gap:8px}
+.spin{width:15px;height:15px;border:2px solid var(--border);
+  border-top-color:var(--orange);border-radius:50%;animation:rot .6s linear infinite;flex-shrink:0}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* TOAST */
+#toast{position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.t{background:var(--navy-d);color:#fff;padding:10px 15px;border-radius:7px;font-size:13px;
+  box-shadow:0 4px 16px rgba(0,0,0,.22);opacity:0;transform:translateX(14px);
+  transition:all .22s;min-width:210px;pointer-events:none}
+.t.on{opacity:1;transform:translateX(0)}
+.t.ok{border-left:3px solid #4CAF50}
+.t.err{border-left:3px solid #F44336}
+.t.warn{border-left:3px solid #FF9800}
+
+code{font-family:monospace;background:rgba(26,58,92,.07);padding:1px 5px;border-radius:3px;font-size:11.5px}
+
+@media(max-width:860px){.two-col{grid-template-columns:1fr} aside{width:190px;min-width:190px}}
+</style>
+</head>
+<body>
+
+<!-- ── SETUP SCREEN ─────────────────────────────────── -->
+<div id="setup">
+  <div>
+    <div class="setup-logo">N</div>
+    <div style="height:8px"></div>
+  </div>
+  <div class="setup-title">Novera Admin Panel</div>
+  <div class="setup-sub">Site dosyalarının bulunduğu klasörü seçin. Tüm HTML dosyaları okunacak ve düzenleme paneli açılacak.</div>
+  <button class="btn-setup" onclick="selectFolder()">
+    <span>📁</span> Novera Klasörünü Seç
+  </button>
+  <div id="setupErr"></div>
+  <div class="setup-note">
+    Chrome veya Brave tarayıcı gereklidir. Dosya izinleri için "Değişikliklere İzin Ver" seçeneğini onaylayın.<br>
+    <strong>Kısayol: Ctrl+S</strong> ile kaydet
+  </div>
+</div>
+
+<!-- ── ADMIN APP ────────────────────────────────────── -->
+<div id="app">
+  <aside>
+    <div class="brand">
+      <div class="brand-icon">N</div>
+      <div>
+        <div class="brand-name">NOVERA</div>
+        <div class="brand-sub">Admin</div>
+      </div>
+    </div>
+    <nav id="nav"></nav>
+    <div class="sidebar-footer" id="sideFooter">Otomatik .bak yedekleme</div>
+  </aside>
+
+  <main>
+    <header>
+      <div class="hdr-left">
+        <b id="hdrPage">—</b>
+        <span class="hdr-sep" id="hdrSep" style="display:none">›</span>
+        <span id="hdrSub" style="display:none">Düzenleme</span>
+      </div>
+      <div class="hdr-actions">
+        <span class="dirty-badge" id="dirtyBadge">● Kaydedilmemiş</span>
+        <button class="btn btn-open" id="openBtn" style="display:none" onclick="openInBrowser()">↗ Önizle</button>
+        <button class="btn btn-primary" id="saveBtn" disabled onclick="doSave()">💾 Kaydet</button>
+      </div>
+    </header>
+    <div class="content" id="content">
+      <div class="empty"><div class="empty-icon">◈</div><div>Sol menüden bir sayfa seçin</div></div>
+    </div>
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+'use strict';
+
+var dirHandle = null;
+var state = { id: null, file: null, data: null, dirty: false };
+
+var PAGES = [
+  { id:'main',     label:'Ana Sayfa',                file:'novera_website6.html', accent:'#2C64A0' },
+  { id:'esg',      label:'ESG ve Sürdürülebilirlik',  file:'novera_esg.html',      accent:'#1E7A50' },
+  { id:'karbon',   label:'Karbon Yönetimi',           file:'novera_karbon.html',   accent:'#E05E2A' },
+  { id:'enerji',   label:'Enerji Verimliliği',        file:'novera_enerji.html',   accent:'#1A7F88' },
+  { id:'finans',   label:'Sürdürülebilir Finans',     file:'novera_finans.html',   accent:'#C0392B' },
+  { id:'marka',    label:'Marka ve İletişim',         file:'novera_marka.html',    accent:'#4C3A8C' },
+  { id:'strateji', label:'Kurumsal Strateji',         file:'novera_strateji.html', accent:'#1A3A5C' },
+];
+
+// ── FOLDER SELECT ─────────────────────────────────────
+async function selectFolder() {
+  var errEl = document.getElementById('setupErr');
+  errEl.style.display = 'none';
+  try {
+    dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+    // Verify it's the right folder
+    try { await dirHandle.getFileHandle('novera_website6.html'); }
+    catch(e) {
+      errEl.textContent = '⚠ Bu klasörde novera_website6.html bulunamadı. Doğru klasörü seçin.';
+      errEl.style.display = 'block';
+      return;
+    }
+    bootApp();
+  } catch(e) {
+    if (e.name !== 'AbortError') {
+      errEl.textContent = '✗ ' + e.message;
+      errEl.style.display = 'block';
+    }
+  }
+}
+
+function bootApp() {
+  document.getElementById('setup').style.display = 'none';
+  var app = document.getElementById('app');
+  app.classList.add('on');
+
+  var nav = document.getElementById('nav');
+  nav.innerHTML = '';
+  PAGES.forEach(function(p) {
+    var el = document.createElement('div');
+    el.className = 'nav-item';
+    el.innerHTML = '<span class="nav-dot"></span>' + p.label;
+    el.onclick = function() { loadPage(p); };
+    nav.appendChild(el);
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); if (state.dirty) doSave(); }
+  });
+  document.getElementById('sideFooter').textContent = dirHandle.name + ' · .bak yedek';
+}
+
+// ── FILE I/O ──────────────────────────────────────────
+async function readPage(file) {
+  var fh = await dirHandle.getFileHandle(file);
+  var f  = await fh.getFile();
+  return await f.text();
+}
+
+async function savePage(file, newContent) {
+  // Backup
+  try {
+    var origFh  = await dirHandle.getFileHandle(file);
+    var origF   = await origFh.getFile();
+    var origTxt = await origF.text();
+    var bakFh   = await dirHandle.getFileHandle(file + '.bak', { create: true });
+    var bakWr   = await bakFh.createWritable();
+    await bakWr.write(origTxt);
+    await bakWr.close();
+  } catch(e) { /* backup failed, continue */ }
+  // Write
+  var fh = await dirHandle.getFileHandle(file, { create: false });
+  var wr = await fh.createWritable();
+  await wr.write(newContent);
+  await wr.close();
+}
+
+// ── CONTENT EXTRACT ───────────────────────────────────
+function ex(html, re) {
+  var m = html.match(re);
+  return m ? m[1].trim() : '';
+}
+function exAll(html, re) {
+  var results = [], m;
+  re.lastIndex = 0;
+  while ((m = re.exec(html)) !== null) {
+    results.push(Array.from(m).slice(1).map(function(s){ return (s||'').trim(); }));
+  }
+  return results;
+}
+
+function extractStats(html) {
+  var pats = [
+    /<div class="h-stat-num">([\s\S]*?)<\/div>[\s\S]*?<div class="h-stat-label">([^<]+)<\/div>/g,
+    /<div class="stat-num">([\s\S]*?)<\/div>\s*<div class="stat-label">([^<]+)<\/div>/g,
+  ];
+  for (var i = 0; i < pats.length; i++) {
+    var hits = exAll(html, pats[i]);
+    if (hits.length) return hits.slice(0,4).map(function(h){ return { raw: h[0], label: h[1] }; });
+  }
+  return [];
+}
+
+function getContent(id, html) {
+  if (id === 'main') {
+    var svcs = exAll(html, /<div class="svc-body">[\s\S]*?<h3>([^<]+)<\/h3>\s*<p>([^<]+)<\/p>/g).slice(0,6)
+                 .map(function(h){ return { title: h[0], desc: h[1] }; });
+    return {
+      type: 'main',
+      hero: {
+        eyebrow: ex(html, /class="hero-eyebrow">([^<]+)<\/div>/),
+        line1:   ex(html, /<h1>([^<]+)<br>/),
+        line2:   ex(html, /<br><em>([^<]+)<\/em><\/h1>/),
+        desc:    ex(html, /class="hero-desc">([\s\S]*?)<\/p>/),
+      },
+      stats:    extractStats(html),
+      services: svcs,
+      footer:   ex(html, /class="footer-desc">([^<]+)<\/p>/),
+      email:    ex(html, /href="mailto:([^"]+)"/),
+    };
+  }
+  return {
+    type: 'subpage',
+    hero: {
+      eyebrow: ex(html, /class="hero-eyebrow">([^<]+)<\/div>/),
+      h1:      ex(html, /<h1>([\s\S]*?)<\/h1>/),
+      desc:    ex(html, /class="page-hero-desc">([\s\S]*?)<\/p>/),
+    },
+    stats:  extractStats(html),
+    footer: ex(html, /class="footer-desc">([^<]+)<\/p>/),
+    email:  ex(html, /href="mailto:([^"]+)"/),
+  };
+}
+
+// ── CONTENT SAVE ─────────────────────────────────────
+function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+function applyChanges(id, prev, changes, html) {
+  var h   = changes.hero || {};
+  var isM = id === 'main';
+
+  if (h.eyebrow !== undefined)
+    html = html.replace(/(class="hero-eyebrow">)[^<]*(<\/div>)/, '$1' + h.eyebrow + '$2');
+  if (isM) {
+    if (h.line1 !== undefined) html = html.replace(/(<h1>)[^<]+(<br>)/,             '$1' + h.line1 + '$2');
+    if (h.line2 !== undefined) html = html.replace(/(<br><em>)[^<]+(<\/em><\/h1>)/, '$1' + h.line2 + '$2');
+    if (h.desc  !== undefined) html = html.replace(/(class="hero-desc">)([\s\S]*?)(<\/p>)/, '$1' + h.desc + '$3');
+  } else {
+    if (h.h1   !== undefined) html = html.replace(/(<h1>)([\s\S]*?)(<\/h1>)/, '$1' + h.h1 + '$3');
+    if (h.desc !== undefined) html = html.replace(/(class="page-hero-desc">)([\s\S]*?)(<\/p>)/, '$1' + h.desc + '$3');
+  }
+
+  if (Array.isArray(changes.stats)) {
+    var numCls = html.includes('h-stat-num')   ? 'h-stat-num'   : 'stat-num';
+    var lblCls = html.includes('h-stat-label') ? 'h-stat-label' : 'stat-label';
+    changes.stats.forEach(function(ns, i) {
+      if (!ns) return;
+      var ps = (prev.stats || [])[i];
+      if (!ps) return;
+      if (ns.raw !== undefined && ns.raw !== ps.raw)
+        html = html.replace(new RegExp('(class="' + numCls + '">)' + escRe(ps.raw) + '(<\\/div>)'), '$1' + ns.raw + '$2');
+      if (ns.label !== undefined && ns.label !== ps.label)
+        html = html.replace(new RegExp('(class="' + lblCls + '">)' + escRe(ps.label) + '(<\\/div>)'), '$1' + ns.label + '$2');
+    });
+  }
+
+  if (isM && Array.isArray(changes.services)) {
+    changes.services.forEach(function(ns, i) {
+      if (!ns) return;
+      var ps = (prev.services || [])[i];
+      if (!ps) return;
+      if (ns.title !== undefined && ns.title !== ps.title)
+        html = html.replace(new RegExp('(<h3>)' + escRe(ps.title) + '(<\\/h3>)'), '$1' + ns.title + '$2');
+      if (ns.desc !== undefined && ns.desc !== ps.desc)
+        html = html.split(ps.desc).join(ns.desc);
+    });
+  }
+
+  if (changes.footer !== undefined && changes.footer !== prev.footer)
+    html = html.replace(/(class="footer-desc">)[^<]*/g, '$1' + changes.footer);
+  if (changes.email !== undefined && changes.email !== prev.email)
+    html = html.split(prev.email).join(changes.email);
+
+  return html;
+}
+
+// ── LOAD PAGE ─────────────────────────────────────────
+function loadPage(page) {
+  if (state.dirty && !confirm('Kaydedilmemiş değişiklikler var. Devam edilsin mi?')) return;
+  document.querySelectorAll('.nav-item').forEach(function(el) {
+    el.classList.toggle('active', el.textContent.trim() === page.label);
+  });
+  document.getElementById('hdrPage').textContent = page.label;
+  document.getElementById('hdrSep').style.display = '';
+  document.getElementById('hdrSub').style.display = '';
+  document.getElementById('openBtn').style.display = '';
+  document.documentElement.style.setProperty('--accent', page.accent);
+  state = { id: page.id, file: page.file, data: null, dirty: false };
+  setDirty(false);
+  document.getElementById('content').innerHTML =
+    '<div class="loading"><div class="spin"></div>Okunuyor…</div>';
+  readPage(page.file).then(function(html) {
+    state.data = getContent(page.id, html);
+    render(state.data);
+  }).catch(function(e) { toast('✗ Dosya okunamadı: ' + e.message, 'err'); });
+}
+
+function openInBrowser() {
+  if (!dirHandle || !state.file) return;
+  toast('Önizleme: dosyayı doğrudan tarayıcıda açın.', 'warn');
+}
+
+// ── RENDER ────────────────────────────────────────────
+function render(data) {
+  var wrap = document.getElementById('content');
+  wrap.innerHTML = '';
+  var grid = document.createElement('div');
+  grid.className = 'page-grid';
+  grid.appendChild(heroCard(data));
+  if (data.stats && data.stats.length) grid.appendChild(statsCard(data.stats));
+  if (data.type === 'main' && data.services && data.services.length) grid.appendChild(servicesCard(data.services));
+  grid.appendChild(footerCard(data));
+  wrap.appendChild(grid);
+  wrap.querySelectorAll('input,textarea').forEach(function(el) {
+    el.addEventListener('input', function() {
+      var f = el.closest('.field');
+      if (f) f.classList.add('changed');
+      setDirty(true);
+    });
+  });
+}
+
+function mkCard(title, body) {
+  var el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML = '<div class="card-head"><span class="card-title"><span class="card-bar"></span>' +
+    title + '</span></div><div class="card-body">' + body + '</div>';
+  return el;
+}
+
+function mkField(label, path, value, isTA, hint) {
+  var id  = 'f_' + path.replace(/[\[\].]/g, '_');
+  var inp = isTA
+    ? '<textarea id="' + id + '" data-path="' + path + '">' + esc(value) + '</textarea>'
+    : '<input type="text" id="' + id + '" data-path="' + path + '" value="' + esc(value) + '">';
+  return '<div class="field"><label for="' + id + '">' + label + '</label>' + inp +
+    (hint ? '<div class="hint">' + hint + '</div>' : '') + '</div>';
+}
+
+function heroCard(data) {
+  var body = '';
+  if (data.type === 'main') {
+    body += mkField('Üst Etiket', 'hero.eyebrow', data.hero.eyebrow, false, '');
+    body += '<div class="two-col">' +
+      mkField('Başlık — 1. Satır', 'hero.line1', data.hero.line1, false, '') +
+      mkField('Başlık — Vurgu (turuncu)', 'hero.line2', data.hero.line2, false, '') +
+      '</div>';
+    body += mkField('Açıklama', 'hero.desc', data.hero.desc, true, '');
+  } else {
+    body += mkField('Üst Etiket', 'hero.eyebrow', data.hero.eyebrow, false, '');
+    body += mkField('H1 Başlık (HTML kabul eder)', 'hero.h1', data.hero.h1, false,
+      '<code>&lt;em&gt;Vurgu&lt;/em&gt;</code> ve <code>&lt;br&gt;</code> etiketleri kullanılabilir');
+    body += mkField('Açıklama', 'hero.desc', data.hero.desc, true, '');
+  }
+  return mkCard('Hero Bölümü', body);
+}
+
+function statsCard(stats) {
+  var body = '<div class="two-col">';
+  for (var i = 0; i < stats.length; i++) {
+    var s = stats[i];
+    body += '<div class="stat-item"><div class="item-badge">İstatistik ' + (i + 1) + '</div>' +
+      mkField('Değer', 'stats[' + i + '].raw', s.raw, false,
+        'Örn: <code>15&lt;span&gt;+&lt;/span&gt;</code> veya <code>GRI·TSRS</code>') +
+      mkField('Açıklama', 'stats[' + i + '].label', s.label, false, '') +
+      '</div>';
+  }
+  body += '</div>';
+  return mkCard('İstatistikler', body);
+}
+
+var SVC_LABELS = ['ESG', 'Karbon', 'Enerji', 'Finans', 'Marka', 'Strateji'];
+function servicesCard(services) {
+  var body = '<div class="two-col">';
+  for (var i = 0; i < services.length; i++) {
+    var s = services[i];
+    body += '<div class="svc-item"><div class="item-badge">Kart ' + (i + 1) + ' · ' + (SVC_LABELS[i] || '') + '</div>' +
+      mkField('Başlık', 'services[' + i + '].title', s.title, false, '') +
+      mkField('Açıklama', 'services[' + i + '].desc', s.desc, true, '') +
+      '</div>';
+  }
+  body += '</div>';
+  return mkCard('Hizmet Kartları', body);
+}
+
+function footerCard(data) {
+  return mkCard('Footer ve İletişim',
+    mkField('Footer Açıklaması', 'footer', data.footer, true,
+      'Birden fazla sayfada aynı metin varsa tüm sayfalarda güncellenir') +
+    mkField('İletişim E-posta', 'email', data.email, false, ''));
+}
+
+// ── COLLECT & SAVE ────────────────────────────────────
+function collectChanges() {
+  var result = {};
+  document.querySelectorAll('[data-path]').forEach(function(el) {
+    setPath(result, el.dataset.path, el.value);
+  });
+  return result;
+}
+
+function setPath(obj, path, val) {
+  var parts = path.replace(/\[(\d+)\]/g, '.$1').split('.');
+  var cur = obj;
+  for (var i = 0; i < parts.length - 1; i++) {
+    var k = parts[i], nxt = parts[i + 1];
+    if (cur[k] === undefined || cur[k] === null)
+      cur[k] = isNaN(parseInt(nxt, 10)) ? {} : [];
+    cur = cur[k];
+  }
+  cur[parts[parts.length - 1]] = val;
+}
+
+async function doSave() {
+  if (!state.id || !dirHandle) return;
+  var btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Kaydediliyor…';
+  try {
+    var html    = await readPage(state.file);
+    var prev    = getContent(state.id, html);
+    var changes = collectChanges();
+    var newHtml = applyChanges(state.id, prev, changes, html);
+    await savePage(state.file, newHtml);
+    toast('✓ Kaydedildi', 'ok');
+    setDirty(false);
+    document.querySelectorAll('.field.changed').forEach(function(f){ f.classList.remove('changed'); });
+    // Refresh state
+    state.data = getContent(state.id, newHtml);
+  } catch(e) {
+    toast('✗ Hata: ' + e.message, 'err');
+  } finally {
+    btn.disabled = !state.dirty;
+    btn.textContent = '💾 Kaydet';
+  }
+}
+
+// ── HELPERS ───────────────────────────────────────────
+function setDirty(v) {
+  state.dirty = v;
+  document.getElementById('saveBtn').disabled = !v;
+  document.getElementById('dirtyBadge').classList.toggle('on', v);
+}
+
+function esc(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function toast(msg, type) {
+  var wrap = document.getElementById('toast');
+  var el = document.createElement('div');
+  el.className = 't ' + (type || 'ok');
+  el.textContent = msg;
+  wrap.appendChild(el);
+  requestAnimationFrame(function(){ el.classList.add('on'); });
+  setTimeout(function(){
+    el.classList.remove('on');
+    setTimeout(function(){ el.remove(); }, 250);
+  }, 3000);
+}
+
+// Check browser support
+if (!window.showDirectoryPicker) {
+  document.querySelector('.setup-sub').textContent =
+    '⚠ Bu tarayıcı File System Access API\'yi desteklemiyor. Lütfen Brave veya Chrome kullanın.';
+  document.querySelector('.btn-setup').disabled = true;
+}
+</script>
+</body>
+</html>

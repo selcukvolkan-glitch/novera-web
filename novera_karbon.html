@@ -1,0 +1,557 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+  <!-- SEO Meta -->
+  <meta name="description" content="Sera gazı envanteri, Scope 1-2-3 emisyon hesaplama, karbon azaltım stratejileri ve bağımsız doğrulama hizmetleri. Net sıfır yolculuğunuzda bilimsel rehberlik.">
+  <meta name="keywords" content="karbon yönetimi, sera gazı envanteri, Scope 1 2 3, karbon nötr, net sıfır, emisyon azaltımı, karbon doğrulama, kapsam 3">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Novera Research &amp; Consultancy">
+  <link rel="canonical" href="https://www.noverafuture.com/novera_karbon.html">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Novera Research &amp; Consultancy">
+  <meta property="og:title" content="Karbon Yönetimi ve Doğrulama | Novera Research &amp; Consultancy">
+  <meta property="og:description" content="Sera gazı envanteri, Scope 1-2-3 emisyon hesaplama, karbon azaltım stratejileri ve bağımsız doğrulama hizmetleri. Net sıfır yolculuğunuzda bilimsel rehberlik.">
+  <meta property="og:url" content="https://www.noverafuture.com/novera_karbon.html">
+  <meta property="og:image" content="https://www.noverafuture.com/novera_carbon.jpg">
+  <meta property="og:locale" content="tr_TR">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Karbon Yönetimi ve Doğrulama | Novera Research &amp; Consultancy">
+  <meta name="twitter:description" content="Sera gazı envanteri, Scope 1-2-3 emisyon hesaplama, karbon azaltım stratejileri ve bağımsız doğrulama hizmetleri. Net sıfır yolculuğunuzda bilimsel rehberlik.">
+  <meta name="twitter:image" content="https://www.noverafuture.com/novera_carbon.jpg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>Karbon Yönetimi ve Doğrulama | Novera Research & Consultancy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1A3A5C; --navy-dark: #0F2340; --navy-mid: #234d7a;
+    --orange: #E05E2A; --orange-light: #f07040; --orange-pale: #FDF0EB;
+    --accent: #1A3A5C;
+    --gray-light: #F5F7FA; --gray-mid: #E8ECF2;
+    --white: #FFFFFF; --text-dark: #1A2B3C; --text-mid: #4A5E72;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'Nunito',sans-serif; color:var(--text-dark); background:var(--white); overflow-x:hidden; }
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    background:transparent;
+    padding:0 5%; height:72px;
+    transition:background .35s,box-shadow .35s;
+  }
+  .nav-inner { max-width:1280px; margin:0 auto; width:100%; height:100%; display:flex; align-items:center; justify-content:space-between; }
+  nav.scrolled { background:rgba(255,255,255,0.97); backdrop-filter:blur(12px); border-bottom:1px solid var(--gray-mid); box-shadow:0 4px 24px rgba(26,58,92,.1); }
+  nav.scrolled .nav-links a { color:rgba(255,255,255,.9); }
+  nav.scrolled .nav-links a:hover { color:#fff; }
+  nav.scrolled .hamburger span { background:rgba(255,255,255,.9); }
+  .nav-logo{text-decoration:none;display:block;}.nav-logo img{height:40px;display:block;}
+  .nav-links { display:flex; gap:32px; list-style:none; align-items:center; }
+  .nav-links a { text-decoration:none; color:rgba(255,255,255,.9); font-size:14px; font-weight:500; letter-spacing:.03em; transition:color .2s; }
+  .nav-links a:hover { color:#fff; }
+  .nav-cta { background:var(--orange) !important; color:#fff !important; padding:10px 22px; border-radius:4px; font-weight:600 !important; transition:background .2s !important; }
+  .nav-cta:hover { background:var(--orange-light) !important; }
+  .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:8px; border:none; background:transparent; z-index:1100; }
+  .hamburger span { display:block; width:24px; height:2px; background:rgba(255,255,255,.9); border-radius:2px; transition:all .3s ease; }
+  .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity:0; }
+  .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+  .mobile-nav { display:block; position:fixed; top:72px; left:0; right:0; background:rgba(255,255,255,0.98); backdrop-filter:blur(12px); border-bottom:1px solid var(--gray-mid); border-top:3px solid var(--green); z-index:999; transform:translateY(-120%); visibility:hidden; opacity:0; transition:transform .35s cubic-bezier(.4,0,.2,1), visibility 0s linear .35s, opacity .35s; box-shadow:0 8px 32px rgba(26,58,92,.15); }
+  .mobile-nav.open { transform:translateY(0); visibility:visible; opacity:1; transition:transform .35s cubic-bezier(.4,0,.2,1), visibility 0s linear 0s, opacity .35s; }
+  .mobile-nav ul { list-style:none; padding:8px 0 16px; margin:0; }
+  .mobile-nav ul li a { display:block; padding:14px 5%; color:var(--text-mid); text-decoration:none; font-size:15px; font-weight:500; border-bottom:1px solid var(--gray-mid); border-top:3px solid var(--green); transition:color .2s, background .2s; }
+  .mobile-nav ul li a:hover { color:var(--navy); background:var(--gray-light); }
+  .mobile-nav ul li:last-child a { margin:12px 5%; padding:12px 20px; background:var(--orange); color:white !important; border-radius:4px; border-bottom:none; text-align:center; font-weight:600; }
+
+  .page-hero { min-height:480px; background:linear-gradient(rgba(10,25,45,.82),rgba(10,25,45,.72)),url('novera_carbon.jpg') center/cover no-repeat; position:relative; display:flex; align-items:center; overflow:hidden; padding:140px 5% 80px; }
+  .page-hero::before { content:''; position:absolute; top:-200px; right:-150px; width:700px; height:700px; background:radial-gradient(circle,rgba(26,58,92,.3) 0%,transparent 68%); pointer-events:none; }
+  .page-hero::after { content:''; position:absolute; bottom:-100px; left:-60px; width:400px; height:400px; background:radial-gradient(circle,rgba(224,94,42,.15) 0%,transparent 70%); pointer-events:none; }
+  .hero-inner { max-width:1280px; margin:0 auto; width:100%; position:relative; z-index:2; }
+  .breadcrumb { display:flex; align-items:center; gap:8px; margin-bottom:24px; font-size:12px; color:rgba(255,255,255,.4); letter-spacing:.04em; }
+  .breadcrumb a { color:rgba(255,255,255,.4); text-decoration:none; transition:color .2s; }
+  .breadcrumb a:hover { color:var(--orange); }
+  .breadcrumb span { color:rgba(255,255,255,.25); }
+  .hero-eyebrow { display:inline-flex; align-items:center; gap:10px; background:rgba(26,58,92,.3); border:1px solid rgba(255,255,255,.18); color:rgba(200,220,255,.9); font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; padding:7px 16px; border-radius:2px; margin-bottom:24px; }
+  .hero-eyebrow::before { content:''; width:6px; height:6px; background:var(--orange); border-radius:50%; flex-shrink:0; }
+  .page-hero h1 { font-family:'Barlow Condensed',sans-serif; font-size:clamp(38px,5vw,68px); font-weight:800; line-height:1.04; color:#fff; margin-bottom:20px; letter-spacing:-.02em; max-width:720px; }
+  .page-hero h1 em { color:var(--orange); font-style:normal; }
+  .page-hero-desc { font-size:17px; line-height:1.8; color:rgba(255,255,255,.55); font-weight:300; max-width:580px; margin-bottom:36px; }
+  .hero-cta-row { display:flex; gap:14px; flex-wrap:wrap; }
+
+  .btn-primary { background:var(--orange); color:#fff; padding:14px 30px; border-radius:4px; text-decoration:none; font-weight:700; font-size:14px; letter-spacing:.04em; text-transform:uppercase; transition:all .2s; display:inline-block; }
+  .btn-primary:hover { background:var(--orange-light); transform:translateY(-1px); box-shadow:0 8px 24px rgba(224,94,42,.35); }
+  .btn-ghost { border:1.5px solid rgba(255,255,255,.25); color:rgba(255,255,255,.8); padding:14px 30px; border-radius:4px; text-decoration:none; font-weight:600; font-size:14px; letter-spacing:.04em; text-transform:uppercase; transition:all .2s; display:inline-block; }
+  .btn-ghost:hover { border-color:#fff; color:#fff; }
+  .btn-outline { border:1.5px solid var(--orange); color:var(--orange); padding:12px 26px; border-radius:4px; text-decoration:none; font-weight:700; font-size:13px; letter-spacing:.04em; text-transform:uppercase; transition:all .2s; display:inline-block; }
+  .btn-outline:hover { background:var(--orange); color:#fff; }
+
+  section { padding:96px 5%; }
+  .inner { max-width:1280px; margin:0 auto; }
+  .section-eyebrow { font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--orange); margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+  .section-eyebrow::before { content:''; width:22px; height:2px; background:var(--orange); }
+  .section-title { font-family:'Barlow Condensed',sans-serif; font-size:clamp(30px,3.8vw,50px); font-weight:800; color:var(--navy); line-height:1.08; letter-spacing:-.02em; }
+  .section-lead { font-size:16px; color:var(--text-mid); line-height:1.75; font-weight:300; max-width:580px; margin-top:14px; }
+
+  .overview { background:#fff; }
+  .overview-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; margin-top:56px; }
+  .overview-text p { font-size:15px; color:var(--text-mid); line-height:1.8; font-weight:300; margin-bottom:16px; }
+  .overview-text p:last-child { margin-bottom:0; }
+  .overview-text strong { color:var(--navy); font-weight:600; }
+  .highlight-box { background:var(--navy); border-radius:12px; padding:40px; display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .h-stat { background:rgba(255,255,255,.07); border-radius:8px; padding:24px 20px; border:1px solid rgba(255,255,255,.08); }
+  .h-stat-num { font-family:'Barlow Condensed',sans-serif; font-size:38px; font-weight:800; color:#fff; line-height:1; }
+  .h-stat-num span { color:var(--orange); }
+  .h-stat-label { font-size:11.5px; color:rgba(255,255,255,.45); margin-top:6px; line-height:1.45; }
+
+  /* SCOPE BOXES */
+  .scope-section { background:var(--navy-dark); padding:80px 5%; }
+  .scope-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:48px; max-width:1280px; margin-left:auto; margin-right:auto; }
+  .scope-card { border-radius:12px; padding:36px 28px; border:1px solid rgba(255,255,255,.1); position:relative; overflow:hidden; }
+  .scope-card.s1 { background:rgba(224,94,42,.12); border-color:rgba(224,94,42,.3); }
+  .scope-card.s2 { background:rgba(35,77,122,.4); border-color:rgba(100,160,220,.25); }
+  .scope-card.s3 { background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.12); }
+  .scope-badge { font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; margin-bottom:12px; }
+  .s1 .scope-badge { color:var(--orange); }
+  .s2 .scope-badge { color:rgba(150,200,255,.8); }
+  .s3 .scope-badge { color:rgba(255,255,255,.5); }
+  .scope-card h3 { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:800; color:#fff; margin-bottom:12px; }
+  .scope-card p { font-size:13.5px; color:rgba(255,255,255,.55); line-height:1.7; font-weight:300; margin-bottom:16px; }
+  .scope-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .scope-list li { font-size:12.5px; color:rgba(255,255,255,.45); padding-left:16px; position:relative; line-height:1.5; }
+  .scope-list li::before { content:''; position:absolute; left:0; top:7px; width:5px; height:5px; border-radius:50%; background:var(--orange); }
+  .scope-header { max-width:1280px; margin:0 auto; }
+
+  .deliverables { background:var(--gray-light); }
+  .del-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:52px; }
+  .del-card { background:#fff; border-radius:10px; border:1px solid var(--gray-mid); padding:32px 28px; transition:transform .25s, box-shadow .25s; position:relative; overflow:hidden; }
+  .del-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:var(--orange); }
+  .del-card:hover { transform:translateY(-4px); box-shadow:0 16px 44px rgba(26,58,92,.1); }
+  .del-icon { width:48px; height:48px; background:var(--orange-pale); border-radius:10px; display:flex; align-items:center; justify-content:center; margin-bottom:18px; }
+  .del-icon svg { width:22px; height:22px; stroke:var(--orange); fill:none; stroke-width:1.8; }
+  .del-card h3 { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:800; color:var(--navy); margin-bottom:10px; }
+  .del-card p { font-size:13.5px; color:var(--text-mid); line-height:1.7; font-weight:300; }
+  .del-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:16px; }
+  .del-tag { background:var(--gray-light); color:var(--text-mid); font-size:10.5px; font-weight:600; padding:3px 9px; border-radius:2px; letter-spacing:.04em; text-transform:uppercase; }
+
+  .process { background:#fff; }
+  .process-list { display:flex; flex-direction:column; gap:0; margin-top:52px; }
+  .process-item { display:grid; grid-template-columns:80px 1fr; gap:28px; padding:48px 0; border-bottom:1px solid var(--gray-mid); align-items:start; }
+  .process-item:first-child { padding-top:8px; border-top:3px solid var(--green); }
+  .process-item:last-child { border-bottom:none; }
+  .p-num { width:54px; height:54px; border-radius:50%; background:var(--orange); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .p-num span { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:800; color:#fff; }
+  .p-content h3 { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:800; color:var(--navy); margin-bottom:10px; }
+  .p-content p { font-size:14px; color:var(--text-mid); line-height:1.72; font-weight:300; }
+  .p-content ul { list-style:none; margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+  .p-content ul li { font-size:13.5px; color:var(--text-mid); padding-left:18px; position:relative; line-height:1.5; font-weight:300; }
+  .p-content ul li::before { content:''; position:absolute; left:0; top:7px; width:6px; height:6px; border-radius:50%; background:var(--orange); }
+
+  .standards { background:var(--gray-light); }
+  .std-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:48px; }
+  .std-card { background:#fff; border:1px solid var(--gray-mid); border-radius:8px; padding:24px 16px; text-align:center; transition:border-color .2s, transform .2s, box-shadow .2s; }
+  .std-card:hover { border-color:var(--orange); transform:translateY(-3px); box-shadow:0 10px 28px rgba(224,94,42,.12); }
+  .std-name { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:800; color:var(--navy); letter-spacing:.04em; margin-bottom:8px; }
+  .std-desc { font-size:11px; color:var(--text-mid); line-height:1.45; }
+
+  .related { background:#fff; }
+  .related-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:48px; }
+  .rel-card { border:1px solid var(--gray-mid); border-radius:10px; padding:28px 24px; text-decoration:none; color:inherit; transition:all .25s; display:block; position:relative; overflow:hidden; }
+  .rel-card::after { content:'→'; position:absolute; right:24px; top:50%; transform:translateY(-50%); color:var(--orange); font-size:18px; font-weight:700; opacity:0; transition:opacity .2s, right .2s; }
+  .rel-card:hover { border-color:var(--orange); box-shadow:0 8px 24px rgba(224,94,42,.1); transform:translateY(-2px); }
+  .rel-card:hover::after { opacity:1; right:20px; }
+  .rel-tag { font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--orange); margin-bottom:10px; }
+  .rel-card h3 { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:800; color:var(--navy); margin-bottom:8px; }
+  .rel-card p { font-size:13px; color:var(--text-mid); line-height:1.6; font-weight:300; }
+
+  .cta-section { background:var(--navy); padding:100px 5%; position:relative; overflow:hidden; }
+  .cta-section::before { content:''; position:absolute; top:-200px; right:-120px; width:600px; height:600px; background:radial-gradient(circle,rgba(224,94,42,.14) 0%,transparent 65%); pointer-events:none; }
+  .cta-inner { max-width:700px; margin:0 auto; text-align:center; position:relative; z-index:1; }
+  .cta-inner h2 { font-family:'Barlow Condensed',sans-serif; font-size:clamp(36px,5vw,60px); font-weight:800; color:#fff; line-height:1.08; margin-bottom:20px; letter-spacing:-.02em; }
+  .cta-inner h2 em { color:var(--orange); font-style:normal; }
+  .cta-inner p { font-size:16px; color:rgba(255,255,255,.5); margin-bottom:36px; font-weight:300; line-height:1.75; }
+  .cta-btns { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .cta-contact-strip { margin-top:44px; padding-top:28px; border-top:1px solid rgba(255,255,255,.1); display:flex; justify-content:center; gap:40px; flex-wrap:wrap; }
+  .cta-contact-item { display:flex; align-items:center; gap:10px; color:rgba(255,255,255,.45); font-size:14px; }
+  .cta-contact-item svg { width:16px; height:16px; stroke:var(--orange); fill:none; stroke-width:2; flex-shrink:0; }
+  .cta-contact-item a { color:rgba(255,255,255,.6); text-decoration:none; transition:color .2s; }
+  .cta-contact-item a:hover { color:var(--orange); }
+
+  footer { background:var(--navy-dark); padding:64px 5% 32px; }
+  .footer-grid { max-width:1280px; margin:0 auto; display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:60px; margin-bottom:48px; }
+  .footer-brand-name { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:800; color:#fff; letter-spacing:.04em; margin-bottom:16px; }
+  .footer-brand-name span { color:var(--orange); }
+  .footer-desc { font-size:13px; color:rgba(255,255,255,.38); line-height:1.7; font-weight:300; max-width:270px; }
+  .footer-social { display:flex; gap:10px; margin-top:20px; }
+  .social-btn { width:34px; height:34px; border-radius:6px; background:rgba(255,255,255,.07); display:flex; align-items:center; justify-content:center; transition:background .2s; text-decoration:none; }
+  .social-btn:hover { background:var(--orange); }
+  .social-btn svg { width:15px; height:15px; stroke:#fff; fill:none; stroke-width:2; }
+  .footer-col h4 { font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#fff; margin-bottom:20px; }
+  .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+  .footer-col ul a { font-size:13px; color:rgba(255,255,255,.42); text-decoration:none; transition:color .2s; font-weight:300; }
+  .footer-col ul a:hover { color:var(--orange); }
+  .footer-bottom { max-width:1280px; margin:0 auto; padding-top:24px; border-top:1px solid rgba(255,255,255,.07); display:flex; justify-content:space-between; align-items:center; font-size:12px; color:rgba(255,255,255,.3); flex-wrap:wrap; gap:12px; }
+
+  .reveal { opacity:0; transform:translateY(24px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+  @media (max-width:1024px) { .overview-grid { grid-template-columns:1fr; gap:48px; } .del-grid { grid-template-columns:1fr 1fr; } .std-grid { grid-template-columns:repeat(3,1fr); } .footer-grid { grid-template-columns:1fr 1fr; gap:40px; } .related-grid { grid-template-columns:1fr 1fr; } .scope-grid { grid-template-columns:1fr; } }
+  @media (max-width:768px) { .hamburger { display:flex; } .nav-links { display:none !important; } section { padding:64px 5%; } .del-grid { grid-template-columns:1fr; } .highlight-box { grid-template-columns:1fr 1fr; } .process-item { grid-template-columns:60px 1fr; gap:16px; } .std-grid { grid-template-columns:repeat(2,1fr); } .related-grid { grid-template-columns:1fr; } .footer-grid { grid-template-columns:1fr 1fr; gap:32px; } .reveal { opacity:1 !important; transform:none !important; } }
+  @media (max-width:480px) { .highlight-box { grid-template-columns:1fr; } .footer-grid { grid-template-columns:1fr; gap:24px; } }
+</style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Service",
+        "name": "Karbon Yönetimi ve Doğrulama",
+        "description": "Sera gazı envanteri, Scope 1-2-3 emisyon hesaplama, karbon azaltım stratejileri ve bağımsız doğrulama hizmetleri. Net sıfır yolculuğunuzda bilimsel rehberlik.",
+        "provider": { "@type": "Organization", "name": "Novera Research & Consultancy", "url": "https://www.noverafuture.com" },
+        "url": "https://www.noverafuture.com/novera_karbon.html",
+        "areaServed": { "@type": "Country", "name": "Turkey" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Ana Sayfa", "item": "https://www.noverafuture.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Karbon Yönetimi", "item": "https://www.noverafuture.com/novera_karbon.html" }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+<nav id="mainNav">
+  <div class="nav-inner">
+  <a href="novera_website6.html" class="nav-logo"><img src="novera_logo.png" alt="Novera Research &amp; Consultancy"></a>
+  <ul class="nav-links">
+    <li><a href="novera_website6.html#hakkimizda">Hakkımızda</a></li>
+    <li><a href="novera_website6.html#hizmetler">Hizmetler</a></li>
+    <li><a href="novera_website6.html#surecimiz">Süreç</a></li>
+    <li><a href="novera_website6.html#referanslar">Referanslar</a></li>
+    <li><a href="novera_website6.html#standartlar">Standartlar</a></li>
+    <li><a href="novera_website6.html#iletisim" class="nav-cta">İletişim</a></li>
+  </ul>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Menüyü aç" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+  </div>
+</nav>
+<div class="mobile-nav" id="mobileNav">
+  <ul>
+    <li><a href="novera_website6.html#hakkimizda" onclick="closeMenu()">Hakkımızda</a></li>
+    <li><a href="novera_website6.html#hizmetler" onclick="closeMenu()">Hizmetler</a></li>
+    <li><a href="novera_website6.html#surecimiz" onclick="closeMenu()">Süreç</a></li>
+    <li><a href="novera_website6.html#referanslar" onclick="closeMenu()">Referanslar</a></li>
+    <li><a href="novera_website6.html#iletisim" onclick="closeMenu()">İletişim</a></li>
+  </ul>
+</div>
+
+<section class="page-hero">
+  <div class="hero-inner">
+    <div class="breadcrumb">
+      <a href="novera_website6.html">Ana Sayfa</a><span>/</span>
+      <a href="novera_website6.html#hizmetler">Hizmetler</a><span>/</span>
+      Karbon Yönetimi
+    </div>
+    <div class="hero-eyebrow">Hizmet Alanı</div>
+    <h1>Karbon Yönetimi<br>ve <em>Doğrulama</em></h1>
+    <p class="page-hero-desc">Scope 1, 2 ve 3 emisyonlarınızı uluslararası metodolojilere göre hesaplar, bağımsız doğrularız. Net sıfır yol haritanızı bilimsel temelde inşa ediyoruz.</p>
+    <div class="hero-cta-row">
+      <a href="novera_website6.html#iletisim" class="btn-primary">Ücretsiz Danışmanlık Alın</a>
+      <a href="#scope-analizi" class="btn-ghost">Scope Kapsamı</a>
+    </div>
+  </div>
+</section>
+
+<section class="overview">
+  <div class="inner">
+    <div class="overview-grid">
+      <div class="overview-text reveal">
+        <div class="section-eyebrow">Neden Karbon Yönetimi?</div>
+        <h2 class="section-title">Emisyon Hesabı Değil,<br>Stratejik Karbonsuzlaşma</h2>
+        <div style="margin-top:28px;">
+          <p>Karbon sınır düzenleme mekanizması (CBAM), AB Taksonomisi, borsacılık zorunlulukları ve tedarik zinciri gereklilikleri — tüm bu baskılar, şirketlerin emisyon verilerini artık zorunlu olarak kamuoyuyla paylaşmasını gerektiriyor.</p>
+          <p>Novera'nın karbon yönetimi hizmeti salt hesaplama değil; <strong>azaltım yol haritası, doğrulama güvencesi ve net sıfır taahhütlerini</strong> destekleyen entegre bir program sunar. TÜRKAK akrediteli doğrulama kuruluşlarıyla iş birliğinde bağımsız güvence de sağlıyoruz.</p>
+          <p>Türkiye Karbon Piyasası, gönüllü karbon kredileri ve I-REC sertifikasyonu konularında da kapsamlı danışmanlık veriyoruz.</p>
+        </div>
+        <div style="margin-top:28px;">
+          <a href="novera_website6.html#iletisim" class="btn-outline">Emisyon Hesabı Başlatalım</a>
+        </div>
+      </div>
+      <div class="highlight-box reveal">
+        <div class="h-stat"><div class="h-stat-num">80<span>+</span></div><div class="h-stat-label">Karbon ayak izi hesaplama projesi</div></div>
+        <div class="h-stat"><div class="h-stat-num">15<span>+</span></div><div class="h-stat-label">Net sıfır yol haritası hazırlanmış kurum</div></div>
+        <div class="h-stat"><div class="h-stat-num">3</div><div class="h-stat-label">Farklı doğrulama standardında uzman kadro</div></div>
+        <div class="h-stat"><div class="h-stat-num">TÜRKAK</div><div class="h-stat-label">Akrediteli doğrulama iş birliği</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scope-section" id="scope-analizi">
+  <div class="scope-header">
+    <div class="section-eyebrow" style="color:rgba(255,200,160,.8);">Emisyon Kapsamı</div>
+    <h2 class="section-title" style="color:#fff;">Scope 1, 2 ve 3'ün<br>Tamamını Kapsıyoruz</h2>
+    <p class="section-lead" style="color:rgba(255,255,255,.5); max-width:560px;">GHG Protocol ve ISO 14064 metodolojilerine uygun olarak tüm emisyon kategorilerini hesaplıyor ve raporluyoruz.</p>
+  </div>
+  <div class="scope-grid">
+    <div class="scope-card s1 reveal">
+      <div class="scope-badge">Scope 1 — Doğrudan Emisyonlar</div>
+      <h3>Şirketin Kontrolündeki Kaynaklar</h3>
+      <p>Şirket bünyesindeki doğrudan yanma, prosese bağlı emisyonlar ve soğutucu gaz kaçakları.</p>
+      <ul class="scope-list">
+        <li>Doğal gaz, fuel-oil, kömür yakma</li>
+        <li>Filo araçları (şirkete ait)</li>
+        <li>Proses emisyonları ve fugitif kaçaklar</li>
+        <li>Soğutucu akışkan kayıpları</li>
+      </ul>
+    </div>
+    <div class="scope-card s2 reveal">
+      <div class="scope-badge">Scope 2 — Dolaylı Enerji Emisyonları</div>
+      <h3>Satın Alınan Enerji Kaynaklı</h3>
+      <p>Şebekeden satın alınan elektrik, ısı ve buhar kullanımından kaynaklanan dolaylı emisyonlar.</p>
+      <ul class="scope-list">
+        <li>Şebeke elektriği (location-based & market-based)</li>
+        <li>Satın alınan ısı ve buhar</li>
+        <li>I-REC ile yenilenebilir enerji mahsubatı</li>
+        <li>Bölgesel elektrik emisyon faktörleri</li>
+      </ul>
+    </div>
+    <div class="scope-card s3 reveal">
+      <div class="scope-badge">Scope 3 — Değer Zinciri Emisyonları</div>
+      <h3>Tedarik Zinciri ve Kullanım Aşaması</h3>
+      <p>15 Scope 3 kategorisinin önceliklendirilmesi, veri toplama ve hesaplama — en kritik ve en büyük emisyon kaynağı.</p>
+      <ul class="scope-list">
+        <li>Satın alınan mal ve hizmetler (Cat. 1)</li>
+        <li>Çalışan seyahati ve iş seyahatleri</li>
+        <li>Ürünlerin kullanım ve kullanım sonu aşaması</li>
+        <li>Yukarı ve aşağı yönlü lojistik</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="deliverables">
+  <div class="inner">
+    <div class="reveal">
+      <div class="section-eyebrow">Hizmet Kapsamı</div>
+      <h2 class="section-title">Ne Sunuyoruz?</h2>
+      <p class="section-lead">Hesaplamadan doğrulamaya, net sıfır stratejisinden karbon piyasasına kadar bütünleşik karbon hizmetleri.</p>
+    </div>
+    <div class="del-grid">
+      <div class="del-card reveal">
+        <div class="del-icon"><svg viewBox="0 0 24 24"><path d="M2 20h20"/><path d="M5 20V10l7-7 7 7v10"/></svg></div>
+        <h3>Kurumsal Karbon Ayak İzi</h3>
+        <p>GHG Protocol ve ISO 14064-1 standartlarına uygun Scope 1, 2 ve 3 emisyon envanteri. Sektöre özgü emisyon faktörü seçimi ve belirsizlik analizi dahildir.</p>
+        <div class="del-tags"><span class="del-tag">GHG Protocol</span><span class="del-tag">ISO 14064</span><span class="del-tag">Scope 1-2-3</span></div>
+      </div>
+      <div class="del-card reveal">
+        <div class="del-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <h3>Bağımsız Doğrulama</h3>
+        <p>TÜRKAK akrediteli doğrulama kuruluşlarıyla iş birliğinde ISO 14064-3 ve GHG Protocol doğrulama protokollerine göre bağımsız güvence sağlıyoruz.</p>
+        <div class="del-tags"><span class="del-tag">TÜRKAK</span><span class="del-tag">ISO 14064-3</span><span class="del-tag">Güvence</span></div>
+      </div>
+      <div class="del-card reveal">
+        <div class="del-icon"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+        <h3>Net Sıfır Yol Haritası</h3>
+        <p>SBTi metodolojisi referans alınarak bilimsel temelli emisyon azaltım hedefleri, azaltım senaryoları ve yıllık hedef takip mekanizması.</p>
+        <div class="del-tags"><span class="del-tag">SBTi</span><span class="del-tag">Net Sıfır</span><span class="del-tag">Senaryo</span></div>
+      </div>
+      <div class="del-card reveal">
+        <div class="del-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg></div>
+        <h3>Karbon Azaltım Planı</h3>
+        <p>Emisyon azaltım fırsatlarının değerlendirilmesi, yatırım maliyeti ile azaltım potansiyelinin karşılaştırılması (marginal abatement cost curve) ve öncelik sıralaması.</p>
+        <div class="del-tags"><span class="del-tag">MACC</span><span class="del-tag">Azaltım</span><span class="del-tag">Yatırım</span></div>
+      </div>
+      <div class="del-card reveal">
+        <div class="del-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
+        <h3>I-REC ve Karbon Kredisi</h3>
+        <p>Uluslararası Yenilenebilir Enerji Sertifikası (I-REC) temini, gönüllü karbon offsetting stratejisi ve piyasa erişimi danışmanlığı.</p>
+        <div class="del-tags"><span class="del-tag">I-REC</span><span class="del-tag">Offsetting</span><span class="del-tag">Karbon Piyasası</span></div>
+      </div>
+      <div class="del-card reveal">
+        <div class="del-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <h3>CBAM Uyum Danışmanlığı</h3>
+        <p>Karbon Sınır Düzenleme Mekanizması kapsamında ürün karbon yoğunluğu hesaplama, CBAM beyanı hazırlama ve ithalatçı müşteri raporlaması.</p>
+        <div class="del-tags"><span class="del-tag">CBAM</span><span class="del-tag">AB</span><span class="del-tag">İhracat</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="process">
+  <div class="inner">
+    <div class="reveal">
+      <div class="section-eyebrow">Metodoloji</div>
+      <h2 class="section-title">Karbon Envanter Süreci</h2>
+      <p class="section-lead">Her proje, tanımlı metodoloji ve şeffaf veri yönetimiyle yürütülür.</p>
+    </div>
+    <div class="process-list">
+      <div class="process-item reveal">
+        <div><div class="p-num"><span>01</span></div></div>
+        <div class="p-content">
+          <h3>Kapsam ve Sınır Tanımı</h3>
+          <p>Organizasyonel sınırların belirlenmesi (kontrol veya özkaynak yaklaşımı), operasyonel sınırlar ve raporlama yılı seçimi.</p>
+          <ul><li>Konsolidasyon yaklaşımının seçilmesi</li><li>Emisyon kaynağı envanteri</li><li>Baz yıl ve raporlama dönemi</li></ul>
+        </div>
+      </div>
+      <div class="process-item reveal">
+        <div><div class="p-num"><span>02</span></div></div>
+        <div class="p-content">
+          <h3>Veri Toplama ve Emisyon Faktörleri</h3>
+          <p>Birincil aktivite verilerinin toplanması, uygun emisyon faktörü kaynaklarının seçimi (IPCC, IEA, ulusal kılavuzlar).</p>
+          <ul><li>Fatura, sayaç ve seyahat verisi</li><li>Tedarikçi bazlı Scope 3 verileri</li><li>Emisyon faktörü kaynakları ve hiyerarşisi</li></ul>
+        </div>
+      </div>
+      <div class="process-item reveal">
+        <div><div class="p-num"><span>03</span></div></div>
+        <div class="p-content">
+          <h3>Hesaplama ve Kalite Kontrolü</h3>
+          <p>Emisyon hesaplamaları, kategori bazlı kontroller, belirsizlik analizi ve tutarlılık doğrulaması.</p>
+          <ul><li>tCO₂e bazlı hesaplama (GWP100)</li><li>Çapraz doğrulama ve veri kalitesi puanlaması</li><li>Güvence aralığı analizi</li></ul>
+        </div>
+      </div>
+      <div class="process-item reveal">
+        <div><div class="p-num"><span>04</span></div></div>
+        <div class="p-content">
+          <h3>Rapor ve Doğrulama</h3>
+          <p>GHG Protocol / ISO 14064 uyumlu envanter raporu hazırlama ve istenirse üçüncü taraf doğrulama sürecinin koordinasyonu.</p>
+          <ul><li>Kısıtlı veya makul güvence doğrulama</li><li>TÜRKAK akrediteli kuruluş koordinasyonu</li><li>Doğrulama beyanı ve rapor teslimi</li></ul>
+        </div>
+      </div>
+      <div class="process-item reveal">
+        <div><div class="p-num" style="background:var(--navy);"><span>05</span></div></div>
+        <div class="p-content">
+          <h3>Azaltım Yol Haritası ve Takip</h3>
+          <p>Belirlenen azaltım fırsatlarına dayalı yol haritası, yıllık izleme mekanizması ve bir sonraki dönem planlama.</p>
+          <ul><li>SBTi uyumlu hedef belirleme</li><li>Yıllık envanter güncelleme takvimi</li><li>Karar destek metrikleri ve dashboard</li></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="standards">
+  <div class="inner">
+    <div class="reveal">
+      <div class="section-eyebrow">Standartlar ve Metodolojiler</div>
+      <h2 class="section-title">Referans Aldığımız Standartlar</h2>
+    </div>
+    <div class="std-grid">
+      <div class="std-card reveal"><div class="std-name">GHG Protocol</div><div class="std-desc">Corporate Standard — Scope 1, 2, 3 hesaplama metodolojisinin küresel standardı</div></div>
+      <div class="std-card reveal"><div class="std-name">ISO 14064</div><div class="std-desc">Sera gazı envanteri (Part 1) ve doğrulama (Part 3) uluslararası standardı</div></div>
+      <div class="std-card reveal"><div class="std-name">SBTi</div><div class="std-desc">Science Based Targets initiative — Bilimsel temelli net sıfır hedefleme metodolojisi</div></div>
+      <div class="std-card reveal"><div class="std-name">TÜRKAK</div><div class="std-desc">Türk Akreditasyon Kurumu — Akrediteli doğrulama kuruluşu iş birliği</div></div>
+      <div class="std-card reveal"><div class="std-name">CBAM</div><div class="std-desc">AB Karbon Sınır Düzenleme Mekanizması — Gömülü karbon hesaplama</div></div>
+      <div class="std-card reveal"><div class="std-name">I-REC</div><div class="std-desc">Uluslararası Yenilenebilir Enerji Sertifikası — Scope 2 market-based mahsubu</div></div>
+      <div class="std-card reveal"><div class="std-name">IPCC AR6</div><div class="std-desc">Altıncı Değerlendirme Raporu — GWP100 küresel ısınma potansiyeli değerleri</div></div>
+      <div class="std-card reveal"><div class="std-name">ISO 14067</div><div class="std-desc">Ürün karbon ayak izi — CBAM ve tedarik zinciri raporlaması</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="related">
+  <div class="inner">
+    <div class="reveal">
+      <div class="section-eyebrow">İlgili Hizmetler</div>
+      <h2 class="section-title">Birlikte Çalışan Hizmetler</h2>
+    </div>
+    <div class="related-grid">
+      <a href="novera_esg.html" class="rel-card reveal">
+        <div class="rel-tag">Hizmet</div>
+        <h3>ESG ve Sürdürülebilirlik</h3>
+        <p>Karbon verilerinizi GRI, ESRS ve TSRS çerçevelerinde raporlayın, yatırımcı güvencesi kazanın.</p>
+      </a>
+      <a href="novera_enerji.html" class="rel-card reveal">
+        <div class="rel-tag">Hizmet</div>
+        <h3>Enerji Verimliliği ve Yönetimi</h3>
+        <p>Scope 1 ve 2 emisyonlarınızı enerji verimliliği yatırımlarıyla sistematik biçimde azaltın.</p>
+      </a>
+      <a href="novera_finans.html" class="rel-card reveal">
+        <div class="rel-tag">Hizmet</div>
+        <h3>Sürdürülebilir Finans</h3>
+        <p>Net sıfır taahhütlerinizi yeşil tahvil ve sürdürülebilirlik bağlantılı finansmana dönüştürün.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" id="iletisim">
+  <div class="cta-inner">
+    <h2>Emisyon Envanterinizi<br><em>Bugün</em> Başlatın</h2>
+    <p>İlk adım ücretsiz: mevcut veri durumunuzu değerlendiriyor, projeyi sizinle şekillendiriyoruz.</p>
+    <div class="cta-btns">
+      <a href="mailto:info@noverafuture.com" class="btn-primary">info@noverafuture.com</a>
+      <a href="novera_website6.html" class="btn-ghost">Ana Sayfaya Dön</a>
+    </div>
+    <div class="cta-contact-strip">
+      <div class="cta-contact-item"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><a href="mailto:info@noverafuture.com">info@noverafuture.com</a></div>
+      <div class="cta-contact-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg><a href="https://www.noverafuture.com" target="_blank">noverafuture.com</a></div>
+      <div class="cta-contact-item"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span>Ankara, Türkiye</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-name"><img src="novera_logo.png" alt="Novera" style="height:34px;filter:brightness(0) invert(1);display:block;"></div>
+      <p class="footer-desc">Entegre sürdürülebilirlik danışmanlığı — ESG, Karbon, Enerji ve Sürdürülebilir Finans alanlarında ölçülebilir değer yaratıyoruz.</p>
+      <div class="footer-social"><a href="#" class="social-btn" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a></div>
+    </div>
+    <div class="footer-col">
+      <h4>Hizmetler</h4>
+      <ul>
+        <li><a href="novera_esg.html">ESG Danışmanlığı</a></li>
+        <li><a href="novera_karbon.html">Karbon Yönetimi</a></li>
+        <li><a href="novera_enerji.html">Enerji Verimliliği</a></li>
+        <li><a href="novera_finans.html">Sürdürülebilir Finans</a></li>
+        <li><a href="novera_marka.html">Marka ve İletişim</a></li>
+        <li><a href="novera_strateji.html">Kurumsal Strateji</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Şirket</h4>
+      <ul>
+        <li><a href="novera_website6.html#hakkimizda">Hakkımızda</a></li>
+        <li><a href="novera_website6.html#surecimiz">Çalışma Modelimiz</a></li>
+        <li><a href="novera_website6.html#referanslar">Referanslar</a></li>
+        <li><a href="novera_website6.html#standartlar">Standartlar</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>İletişim</h4>
+      <ul>
+        <li><a href="mailto:info@noverafuture.com">info@noverafuture.com</a></li>
+        <li><a href="https://www.noverafuture.com" target="_blank">noverafuture.com</a></li>
+        <li><a href="#">Ankara, Türkiye</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Novera Research & Consultancy. Tüm hakları saklıdır.</span>
+    <span style="color:rgba(255,255,255,.2);">Entegre Danışmanlık · ESG · Karbon · Enerji · Finans</span>
+  </div>
+</footer>
+
+<script>
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 40); });
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mobileNav = document.getElementById('mobileNav');
+function toggleMenu() { const isOpen = hamburgerBtn.classList.toggle('open'); mobileNav.classList.toggle('open', isOpen); document.body.style.overflow = isOpen ? 'hidden' : ''; }
+function closeMenu() { hamburgerBtn.classList.remove('open'); mobileNav.classList.remove('open'); document.body.style.overflow = ''; }
+document.addEventListener('click', (e) => { if (!nav.contains(e.target) && mobileNav.classList.contains('open')) closeMenu(); });
+window.addEventListener('resize', () => { if (window.innerWidth > 768) closeMenu(); });
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }); }, { threshold: 0.1 });
+revealEls.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
