@@ -198,7 +198,7 @@ var dirHandle = null;
 var state = { id: null, file: null, data: null, dirty: false };
 
 var PAGES = [
-  { id:'main',     label:'Ana Sayfa',                file:'novera_website6.html', accent:'#2C64A0' },
+  { id:'main',     label:'Ana Sayfa',                file:'index.html', accent:'#2C64A0' },
   { id:'esg',      label:'ESG ve Sürdürülebilirlik',  file:'novera_esg.html',      accent:'#1E7A50' },
   { id:'karbon',   label:'Karbon Yönetimi',           file:'novera_karbon.html',   accent:'#E05E2A' },
   { id:'enerji',   label:'Enerji Verimliliği',        file:'novera_enerji.html',   accent:'#1A7F88' },
@@ -214,9 +214,9 @@ async function selectFolder() {
   try {
     dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
     // Verify it's the right folder
-    try { await dirHandle.getFileHandle('novera_website6.html'); }
+    try { await dirHandle.getFileHandle('index.html'); }
     catch(e) {
-      errEl.textContent = '⚠ Bu klasörde novera_website6.html bulunamadı. Doğru klasörü seçin.';
+      errEl.textContent = '⚠ Bu klasörde index.html bulunamadı. Doğru klasörü seçin.';
       errEl.style.display = 'block';
       return;
     }
