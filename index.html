@@ -93,7 +93,7 @@
 
   .hero-grid {
     display:grid; grid-template-columns:1fr 1fr; gap:80px;
-    align-items:center; max-width:1280px; margin:0 auto;
+    align-items:start; max-width:1280px; margin:0 auto;
     width:100%; position:relative; z-index:2;
   }
   .hero-eyebrow {
@@ -135,7 +135,7 @@
   .btn-ghost:hover { border-color:#fff; color:#fff; }
 
   /* hero stats */
-  .hero-stats { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .hero-stats { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:58px; }
   .stat-card {
     background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.09);
     border-radius:8px; padding:28px 22px; position:relative; overflow:hidden;
@@ -147,6 +147,8 @@
     width:3px; height:100%; background:var(--orange); opacity:0; transition:opacity .3s;
   }
   .stat-card:hover::before { opacity:1; }
+  .stat-icon { width:30px; height:30px; color:var(--orange); opacity:.8; margin-bottom:14px; transition:opacity .3s; }
+  .stat-card:hover .stat-icon { opacity:1; }
   .stat-num {
     font-family:'Barlow Condensed',sans-serif; font-size:46px; font-weight:800;
     color:#fff; line-height:1; margin-bottom:8px;
@@ -630,7 +632,7 @@
     .hero-grid { grid-template-columns:1fr; gap:40px; }
     .hero h1 { font-size:clamp(32px,8vw,52px); }
     .hero-desc { font-size:15px; }
-    .hero-stats { grid-template-columns:1fr 1fr; gap:12px; }
+    .hero-stats { grid-template-columns:1fr 1fr; gap:12px; margin-top:0; }
     .hero-btns { flex-direction:column; gap:12px; }
     .btn-primary, .btn-ghost { text-align:center; }
 
@@ -781,18 +783,22 @@
     <div>
       <div class="hero-stats">
         <div class="stat-card">
+          <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V10"/><path d="M19 21V10"/><path d="M3 10l9-6 9 6"/><path d="M9 21v-7"/><path d="M15 21v-7"/></svg>
           <div class="stat-num">15<span>+</span></div>
           <div class="stat-label">Kamu ve özel sektörden referans kurum</div>
         </div>
         <div class="stat-card">
+          <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
           <div class="stat-num">6</div>
           <div class="stat-label">Entegre hizmet alanı, tek çatı altında</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num" style="font-size:30px;line-height:1.1;">GRI·TSRS</div>
-          <div class="stat-label" style="margin-top:6px;">Uluslararası standartlara tam uyum</div>
+          <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+          <div class="stat-num">GRI·TSRS</div>
+          <div class="stat-label">Uluslararası standartlara tam uyum</div>
         </div>
         <div class="stat-card">
+          <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg>
           <div class="stat-num">360<span>°</span></div>
           <div class="stat-label">Analiz → Strateji → Uygulama → Raporlama</div>
         </div>
