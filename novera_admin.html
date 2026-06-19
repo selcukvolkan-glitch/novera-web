@@ -27,6 +27,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;
   transition:background .2s;display:flex;align-items:center;gap:8px}
 .btn-setup:hover{background:var(--orange-h)}
+.token-input{width:280px;padding:12px 14px;border:1px solid var(--border);border-radius:8px;
+  font-size:14px;color:var(--text);background:var(--surface)}
+.token-input:focus{outline:none;border-color:var(--orange)}
 .setup-note{font-size:12px;color:var(--muted);max-width:380px;line-height:1.5;
   background:rgba(26,58,92,.06);padding:10px 16px;border-radius:6px}
 #setupErr{color:#C0392B;font-size:13px;display:none}
@@ -145,13 +148,14 @@ code{font-family:monospace;background:rgba(26,58,92,.07);padding:1px 5px;border-
     <div style="height:8px"></div>
   </div>
   <div class="setup-title">Novera Admin Panel</div>
-  <div class="setup-sub">Site dosyalarının bulunduğu klasörü seçin. Tüm HTML dosyaları okunacak ve düzenleme paneli açılacak.</div>
-  <button class="btn-setup" onclick="selectFolder()">
-    <span>📁</span> Novera Klasörünü Seç
+  <div class="setup-sub">Devam etmek için yönetici parolanızı girin.</div>
+  <input type="password" id="tokenInput" class="token-input" placeholder="Yönetici parolası" autocomplete="off" onkeydown="if(event.key==='Enter') login()">
+  <button class="btn-setup" onclick="login()">
+    <span>🔑</span> Giriş Yap
   </button>
   <div id="setupErr"></div>
   <div class="setup-note">
-    Chrome veya Brave tarayıcı gereklidir. Dosya izinleri için "Değişikliklere İzin Ver" seçeneğini onaylayın.<br>
+    Parola, sunucudaki <code>admin_api.php</code> dosyasındaki <code>ADMIN_TOKEN</code> ile aynı olmalı.<br>
     <strong>Kısayol: Ctrl+S</strong> ile kaydet
   </div>
 </div>
@@ -194,7 +198,8 @@ code{font-family:monospace;background:rgba(26,58,92,.07);padding:1px 5px;border-
 <script>
 'use strict';
 
-var dirHandle = null;
+var API_URL = 'admin_api.php';
+var API_TOKEN = sessionStorage.getItem('novera_admin_token') || '';
 var state = { id: null, file: null, data: null, dirty: false };
 
 var PAGES = [
@@ -225,25 +230,49 @@ var IMAGES = [
   { file:'novera_marka_bg.jpg',    label:'Marka ve İletişim Görseli',      usedIn:'Ana Sayfa (hizmet kartı), Marka ve İletişim sayfası (hero)' },
 ];
 
-// ── FOLDER SELECT ─────────────────────────────────────
-async function selectFolder() {
+// ── API / AUTH ────────────────────────────────────────
+function authHeaders() {
+  return { 'Authorization': 'Bearer ' + API_TOKEN };
+}
+
+async function apiRead(file) {
+  var res = await fetch(API_URL + '?action=read&file=' + encodeURIComponent(file), { headers: authHeaders() });
+  if (!res.ok) throw new Error('Okuma hatası (' + res.status + ')');
+  var buf = await res.arrayBuffer();
+  return new TextDecoder('utf-8', { ignoreBOM: true }).decode(buf);
+}
+
+async function apiWrite(file, content) {
+  var res = await fetch(API_URL + '?action=write&file=' + encodeURIComponent(file), {
+    method: 'POST',
+    headers: authHeaders(),
+    body: new TextEncoder().encode(content),
+  });
+  if (!res.ok) throw new Error('Yazma hatası (' + res.status + ')');
+}
+
+async function apiUploadImage(file, arrayBuffer) {
+  var res = await fetch(API_URL + '?action=upload-image&file=' + encodeURIComponent(file), {
+    method: 'POST',
+    headers: authHeaders(),
+    body: arrayBuffer,
+  });
+  if (!res.ok) throw new Error('Yükleme hatası (' + res.status + ')');
+}
+
+async function login() {
   var errEl = document.getElementById('setupErr');
   errEl.style.display = 'none';
+  var token = document.getElementById('tokenInput').value.trim();
+  if (!token) return;
+  API_TOKEN = token;
   try {
-    dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
-    // Verify it's the right folder
-    try { await dirHandle.getFileHandle('index.html'); }
-    catch(e) {
-      errEl.textContent = '⚠ Bu klasörde index.html bulunamadı. Doğru klasörü seçin.';
-      errEl.style.display = 'block';
-      return;
-    }
+    await apiRead('index.html');
+    sessionStorage.setItem('novera_admin_token', token);
     bootApp();
   } catch(e) {
-    if (e.name !== 'AbortError') {
-      errEl.textContent = '✗ ' + e.message;
-      errEl.style.display = 'block';
-    }
+    errEl.textContent = '✗ Giriş başarısız: ' + e.message;
+    errEl.style.display = 'block';
   }
 }
 
@@ -285,34 +314,17 @@ function bootApp() {
   document.addEventListener('keydown', function(e) {
     if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); if (state.dirty) doSave(); }
   });
-  document.getElementById('sideFooter').textContent = dirHandle.name + ' · .bak yedek';
+  document.getElementById('sideFooter').textContent = 'Canlı site · .bak yedek';
 }
 
 // ── FILE I/O ──────────────────────────────────────────
 async function readPage(file) {
-  var fh = await dirHandle.getFileHandle(file);
-  var f  = await fh.getFile();
-  return await f.text();
+  return apiRead(file);
 }
 
 async function savePage(file, newContent) {
-  var origFh  = await dirHandle.getFileHandle(file);
-  var origF   = await origFh.getFile();
-  var origBuf = await origF.arrayBuffer();
-  var origBytes = new Uint8Array(origBuf);
-  var hasBom = origBytes.length >= 3 && origBytes[0] === 0xEF && origBytes[1] === 0xBB && origBytes[2] === 0xBF;
-  // Backup
-  try {
-    var bakFh = await dirHandle.getFileHandle(file + '.bak', { create: true });
-    var bakWr = await bakFh.createWritable();
-    await bakWr.write(origBuf);
-    await bakWr.close();
-  } catch(e) { /* backup failed, continue */ }
-  // Write (orijinal dosyada BOM varsa korunur)
-  var fh = await dirHandle.getFileHandle(file, { create: false });
-  var wr = await fh.createWritable();
-  await wr.write((hasBom ? '﻿' : '') + newContent);
-  await wr.close();
+  // Yedekleme (.bak) ve BOM koruma sunucu tarafında (admin_api.php) yapılır.
+  await apiWrite(file, newContent);
 }
 
 // ── CONTENT EXTRACT ───────────────────────────────────
@@ -618,46 +630,37 @@ function renderImagesGrid() {
   });
 }
 
-async function loadImagePreview(file, i) {
+function loadImagePreview(file, i) {
   var sizeEl = document.getElementById('imgSize_' + i);
-  try {
-    var fh = await dirHandle.getFileHandle(file);
-    var f  = await fh.getFile();
-    var imgEl = document.getElementById('imgPrev_' + i);
-    if (imgEl) imgEl.src = URL.createObjectURL(f);
-    if (sizeEl) sizeEl.textContent = formatSize(f.size);
-  } catch(e) {
+  var imgEl  = document.getElementById('imgPrev_' + i);
+  if (imgEl) imgEl.src = file + '?v=' + Date.now();
+  fetch(file, { method: 'HEAD', cache: 'no-store' }).then(function(res) {
+    if (!res.ok) throw new Error();
+    var len = res.headers.get('Content-Length');
+    if (sizeEl) sizeEl.textContent = len ? formatSize(parseInt(len, 10)) : '—';
+  }).catch(function() {
     if (sizeEl) sizeEl.textContent = 'bulunamadı';
-  }
+  });
 }
 
-async function replaceImage(i) {
+function replaceImage(i) {
   var img = IMAGES[i];
-  try {
-    var handles = await window.showOpenFilePicker({
-      types: [{ description: 'Görsel', accept: { 'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.gif'] } }],
-      multiple: false,
-    });
-    var newFile = await handles[0].getFile();
-    var bytes = await newFile.arrayBuffer();
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = async function() {
+    var file = input.files && input.files[0];
+    if (!file) return;
     try {
-      var oldFh   = await dirHandle.getFileHandle(img.file);
-      var oldFile = await oldFh.getFile();
-      var oldBytes = await oldFile.arrayBuffer();
-      var bakFh = await dirHandle.getFileHandle(img.file + '.bak', { create: true });
-      var bakWr = await bakFh.createWritable();
-      await bakWr.write(oldBytes);
-      await bakWr.close();
-    } catch(e) { /* yedek alınamadı, devam */ }
-    var fh = await dirHandle.getFileHandle(img.file, { create: true });
-    var wr = await fh.createWritable();
-    await wr.write(bytes);
-    await wr.close();
-    toast('✓ ' + img.label + ' güncellendi', 'ok');
-    loadImagePreview(img.file, i);
-  } catch(e) {
-    if (e.name !== 'AbortError') toast('✗ Hata: ' + e.message, 'err');
-  }
+      var bytes = await file.arrayBuffer();
+      await apiUploadImage(img.file, bytes);
+      toast('✓ ' + img.label + ' güncellendi', 'ok');
+      loadImagePreview(img.file, i);
+    } catch(e) {
+      toast('✗ Hata: ' + e.message, 'err');
+    }
+  };
+  input.click();
 }
 
 // ── NAVİGASYON (global) ───────────────────────────────
@@ -778,8 +781,8 @@ function renderNav(labels) {
 }
 
 function openInBrowser() {
-  if (!dirHandle || !state.file) return;
-  toast('Önizleme: dosyayı doğrudan tarayıcıda açın.', 'warn');
+  if (!state.file) return;
+  window.open(state.file, '_blank');
 }
 
 // ── RENDER ────────────────────────────────────────────
@@ -930,7 +933,7 @@ function setPath(obj, path, val) {
 }
 
 async function doSave() {
-  if (!dirHandle) return;
+  if (!API_TOKEN) return;
   if (mode === 'nav') return doSaveNav();
   if (mode !== 'page' || !state.id) return;
   var btn = document.getElementById('saveBtn');
@@ -1001,11 +1004,12 @@ function toast(msg, type) {
   }, 3000);
 }
 
-// Check browser support
-if (!window.showDirectoryPicker) {
-  document.querySelector('.setup-sub').textContent =
-    '⚠ Bu tarayıcı File System Access API\'yi desteklemiyor. Lütfen Brave veya Chrome kullanın.';
-  document.querySelector('.btn-setup').disabled = true;
+// Önceden girilmiş bir token varsa otomatik giriş dene
+if (API_TOKEN) {
+  apiRead('index.html').then(bootApp).catch(function() {
+    sessionStorage.removeItem('novera_admin_token');
+    API_TOKEN = '';
+  });
 }
 </script>
 </body>
