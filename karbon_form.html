@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karbon Veri Toplama Formu · NOVERA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1A3A5C; --navy-dark:#0F2340; --navy-mid:#234d7a;
+    --orange:#E05E2A; --orange-light:#f07040; --orange-pale:#FDF0EB;
+    --gray-light:#F5F7FA; --gray-mid:#E8ECF2; --white:#FFFFFF;
+    --text-dark:#1A2B3C; --text-mid:#4A5E72;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Barlow',sans-serif;color:var(--text-dark);background:var(--gray-light)}
+  h1,h2,h3{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+  button{cursor:pointer;font-family:inherit}
+  input,select,textarea{font-family:inherit;font-size:14px}
+
+  .topbar{background:var(--navy-dark);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+  .topbar .brand{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;letter-spacing:.5px}
+  .topbar .brand span{color:var(--orange-light)}
+  .topbar .who{font-size:13px;color:#cfd8e3;display:flex;align-items:center;gap:14px}
+  .btn-link{background:none;border:none;color:#fff;text-decoration:underline;font-size:13px;padding:0}
+
+  .wrap{max-width:880px;margin:0 auto;padding:40px 20px}
+  .wrap.wide{max-width:1100px}
+
+  .card{background:var(--white);border-radius:14px;box-shadow:0 2px 14px rgba(15,35,64,.08);padding:32px}
+  .center-card{max-width:420px;margin:60px auto}
+
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:13px;font-weight:600;color:var(--text-mid);margin-bottom:6px}
+  .field input, .field textarea, .field select{
+    width:100%;padding:10px 12px;border:1px solid var(--gray-mid);border-radius:8px;
+    color:var(--text-dark);background:var(--white)
+  }
+  .field input:focus, .field textarea:focus, .field select:focus{outline:none;border-color:var(--orange)}
+
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:8px;border:none;font-weight:600;font-size:14px}
+  .btn-primary{background:var(--orange);color:#fff}
+  .btn-primary:hover{background:var(--orange-light)}
+  .btn-secondary{background:var(--gray-mid);color:var(--text-dark)}
+  .btn-secondary:hover{background:#dde3ea}
+  .btn-full{width:100%;justify-content:center}
+
+  .err{background:#FDEDED;color:#B3261E;border:1px solid #F6C8C5;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:16px;display:none}
+  .switch-link{text-align:center;margin-top:18px;font-size:13px;color:var(--text-mid)}
+  .switch-link a{color:var(--orange);text-decoration:none;font-weight:600;cursor:pointer}
+
+  .tabs{display:flex;gap:6px;border-bottom:2px solid var(--gray-mid);margin-bottom:28px;flex-wrap:wrap}
+  .tab{padding:10px 16px;font-size:14px;font-weight:600;color:var(--text-mid);border-bottom:3px solid transparent;cursor:pointer}
+  .tab.active{color:var(--orange);border-color:var(--orange)}
+
+  .group-title{font-size:16px;font-weight:700;color:var(--navy);margin:28px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--gray-mid)}
+  .group-title:first-child{margin-top:0}
+
+  .item-card{border:1px solid var(--gray-mid);border-radius:10px;padding:16px 18px;margin-bottom:12px}
+  .item-name{font-weight:600;font-size:14px;margin-bottom:4px}
+  .item-ref{font-size:12px;color:var(--text-mid);margin-bottom:12px;line-height:1.6}
+  .item-ref b{color:var(--navy-mid)}
+  .item-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .item-grid .full{grid-column:1/-1}
+  .item-grid label{display:block;font-size:11px;font-weight:600;color:var(--text-mid);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+  .item-grid input, .item-grid select, .item-grid textarea{
+    width:100%;padding:8px 10px;border:1px solid var(--gray-mid);border-radius:6px;font-size:13px
+  }
+
+  .actionbar{position:sticky;bottom:0;background:var(--white);border-top:1px solid var(--gray-mid);
+    padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-radius:0 0 14px 14px}
+  .saved-note{font-size:12px;color:var(--text-mid)}
+
+  table{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:12.5px}
+  table th, table td{border:1px solid var(--gray-mid);padding:7px 9px;text-align:left;vertical-align:top}
+  table th{background:var(--navy);color:#fff;font-weight:600;font-size:11.5px}
+  table caption{text-align:left;font-size:15px;font-weight:700;color:var(--navy);padding:16px 0 8px;font-family:'Barlow Condensed',sans-serif}
+
+  .print-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px}
+  .print-header h1{font-size:26px;color:var(--navy)}
+  .print-header .meta{font-size:13px;color:var(--text-mid);margin-top:4px}
+
+  .admin-table{width:100%;border-collapse:collapse}
+  .admin-table th, .admin-table td{padding:12px 14px;border-bottom:1px solid var(--gray-mid);text-align:left;font-size:14px}
+  .admin-table th{color:var(--text-mid);font-size:12px;text-transform:uppercase}
+
+  .hidden{display:none !important}
+
+  @media print{
+    .topbar, .no-print{display:none !important}
+    body{background:#fff}
+    .wrap{max-width:100%;padding:0}
+    .card{box-shadow:none;padding:0}
+    @page{size:A4 landscape;margin:14mm}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">NOVERA <span>· Karbon Veri Formu</span></div>
+  <div class="who hidden" id="whoBar">
+    <span id="whoLabel"></span>
+    <button class="btn-link" onclick="logout()">Çıkış Yap</button>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="view-login" class="wrap hidden">
+  <div class="card center-card">
+    <h2 style="margin-bottom:6px">Giriş Yap</h2>
+    <p style="color:var(--text-mid);font-size:13px;margin-bottom:20px">Karbon veri toplama formuna erişmek için giriş yapın.</p>
+    <div class="err" id="loginErr"></div>
+    <div class="field"><label>Kullanıcı Adı</label><input id="loginUser" autocomplete="username"></div>
+    <div class="field"><label>Parola</label><input type="password" id="loginPass" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLogin()"></div>
+    <button class="btn btn-primary btn-full" onclick="doLogin()">Giriş Yap</button>
+    <div class="switch-link">Hesabınız yok mu? <a onclick="showView('register')">Kayıt Olun</a></div>
+  </div>
+</div>
+
+<!-- REGISTER -->
+<div id="view-register" class="wrap hidden">
+  <div class="card center-card">
+    <h2 style="margin-bottom:6px">Kayıt Ol</h2>
+    <p style="color:var(--text-mid);font-size:13px;margin-bottom:20px">Şirketiniz için yeni bir hesap oluşturun.</p>
+    <div class="err" id="registerErr"></div>
+    <div class="field"><label>Şirket Adı</label><input id="regCompany"></div>
+    <div class="field"><label>Kullanıcı Adı</label><input id="regUser" autocomplete="username"></div>
+    <div class="field"><label>Parola</label><input type="password" id="regPass" autocomplete="new-password"></div>
+    <div class="field"><label>Parola (Tekrar)</label><input type="password" id="regPass2" autocomplete="new-password" onkeydown="if(event.key==='Enter') doRegister()"></div>
+    <button class="btn btn-primary btn-full" onclick="doRegister()">Kayıt Ol</button>
+    <div class="switch-link">Zaten hesabınız var mı? <a onclick="showView('login')">Giriş Yapın</a></div>
+  </div>
+</div>
+
+<!-- FORM (customer) -->
+<div id="view-form" class="wrap wide hidden">
+  <div class="card" style="padding:0;overflow:hidden">
+    <div style="padding:28px 32px 0">
+      <h1 style="font-size:24px;color:var(--navy)">Kurumsal Karbon Ayak İzi — Veri Toplama Formu</h1>
+      <p style="color:var(--text-mid);font-size:13px;margin:6px 0 0">Sarı alanlar yerine, ilgili kutuları doldurun. Her kalem için kaynak belgenizi (fatura, sayaç okuma, ERP dökümü vb.) referans alın.</p>
+      <div class="tabs" id="tabs" style="margin-top:24px"></div>
+    </div>
+    <div style="padding:0 32px" id="sectionContent"></div>
+    <div class="actionbar no-print">
+      <span class="saved-note" id="savedNote">Henüz kaydedilmedi</span>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-secondary" onclick="goToPrint('self')">Yazdırılabilir Özet</button>
+        <button class="btn btn-primary" onclick="saveForm()">Kaydet</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN LIST -->
+<div id="view-admin" class="wrap wide hidden">
+  <div class="card">
+    <h2 style="margin-bottom:18px">Müşteri Gönderimleri</h2>
+    <table class="admin-table">
+      <thead><tr><th>Şirket</th><th>Kullanıcı Adı</th><th>Kayıt Tarihi</th><th>Son Kaydedilme</th><th></th></tr></thead>
+      <tbody id="adminTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- PRINT VIEW -->
+<div id="view-print" class="wrap wide hidden">
+  <div class="no-print" style="margin-bottom:16px;display:flex;gap:10px">
+    <button class="btn btn-secondary" onclick="backFromPrint()">← Geri</button>
+    <button class="btn btn-primary" onclick="window.print()">Yazdır / PDF Olarak Kaydet</button>
+  </div>
+  <div class="card" id="printContent"></div>
+</div>
+
+<script>
+function item(name, unit, period, evidence, dept, efSource) {
+  return { name: name, unit: unit, period: period, evidence: evidence, dept: dept, efSource: efSource };
+}
+
+var KURUMSAL = [
+  "Şirket unvanı (yasal)",
+  "Raporlama dönemi (örn. 01.01–31.12.2024)",
+  "Baz yıl (base year)",
+  "Konsolidasyon yaklaşımı (operasyonel kontrol / finansal kontrol / eşitlik payı)",
+  "Standart (GHG Protocol / ISO 14064-1 / CDP / SBTi)",
+  "GWP seti (örn. IPCC AR6 - 100 yıl)",
+  "Dâhil edilen tesisler (liste)",
+  "Toplam çalışan sayısı",
+  "Toplam kapalı alan (m²)",
+  "Üretim hacmi (ton/yıl) — yoğunluk göstergesi için",
+  "Faaliyet kolu / NACE kodu",
+  "Hariç tutulan Kapsam 3 kategorileri + gerekçe (→ Ek 1)",
+  "Bağımsız doğrulama yapılacak mı? (Evet/Hayır)",
+  "Rapordan sorumlu kişi / iletişim",
+];
+
+var KAPSAM1 = [
+  { group: "1.1 Sabit Yanma (tesis kaynaklı)", items: [
+    item("Doğalgaz","Sm³","2026","Doğalgaz faturaları / sayaç","Enerji / Fabrika","DEFRA / IPCC"),
+    item("Doğalgaz (kWh karşılığı)","kWh","2026","Fatura","Enerji","DEFRA"),
+    item("LPG","ton","2026","Alım irsaliyesi","Satın alma","DEFRA"),
+    item("Fuel-oil / motorin (ısıtma)","litre","2026","Alım kayıtları","Satın alma","DEFRA"),
+    item("Kömür / kok","ton","2026","Stok kayıtları","Üretim","IPCC"),
+    item("Biokütle / odun","ton","2026","Alım kayıtları","Fabrika","DEFRA"),
+    item("Jeneratör dizeli","litre","2026","Akaryakıt fişi","Bakım","DEFRA"),
+  ]},
+  { group: "1.2 Mobil Yanma (araç filosu)", items: [
+    item("Benzinli araçlar — yakıt","litre","2026","Filo yakıt kartı raporu","Filo / İdari","DEFRA"),
+    item("Dizel araçlar — yakıt","litre","2026","Filo yakıt kartı raporu","Filo / İdari","DEFRA"),
+    item("LPG/CNG araçlar — yakıt","litre/kg","2026","Filo raporu","Filo","DEFRA"),
+    item("Forklift / iş makinesi yakıtı","litre","2026","Bakım / depo kayıtları","Lojistik","DEFRA"),
+    item("Alternatif: filo mesafesi + araç tipi","km","2026","Araç takip sistemi","Filo","DEFRA"),
+  ]},
+  { group: "1.3 Kaçak Emisyonlar (fugitive)", items: [
+    item("Soğutucu gaz dolumu — R-410A","kg","2026","İklimlendirme bakım formu","Bakım","IPCC GWP"),
+    item("Soğutucu gaz dolumu — R-134a","kg","2026","Bakım formu","Bakım","IPCC GWP"),
+    item("Soğutucu gaz dolumu — diğer (belirtiniz)","kg","2026","Bakım formu","Bakım","IPCC GWP"),
+    item("Yangın söndürme gazı (CO₂/HFC)","kg","2026","Tüp dolum kayıtları","İSG","IPCC GWP"),
+    item("Kaynak/proses gazları (varsa)","kg/m³","2026","Üretim kayıtları","Üretim","Tedarikçi/IPCC"),
+  ]},
+];
+
+var KAPSAM2 = [
+  { group: "2.1 Elektrik (tesis bazında girilmeli)", items: [
+    item("Çerkezköy — satın alınan elektrik","kWh","2026","Elektrik faturası","Enerji","Ulusal şebeke faktörü"),
+    item("Gebze — satın alınan elektrik","kWh","2026","Elektrik faturası","İdari","Ulusal şebeke faktörü"),
+    item("Ankara — satın alınan elektrik","kWh","2026","Elektrik faturası","İdari","Ulusal şebeke faktörü"),
+    item("İstanbul Ofisi — satın alınan elektrik","kWh","2026","Elektrik faturası","İdari","Ulusal şebeke faktörü"),
+    item("Yenilenebilir elektrik sertifikası (YEK-G/I-REC)","kWh","2026","Sertifika","Enerji","0 (pazar bazlı)"),
+    item("Öz tüketim — yerinde güneş (GES)","kWh","2026","Üretim sayacı","Enerji","0"),
+  ]},
+  { group: "2.2 Buhar / Isıtma / Soğutma", items: [
+    item("Satın alınan buhar","kWh / GJ","2026","Tedarikçi faturası","Enerji","Tedarikçi/DEFRA"),
+    item("Satın alınan bölgesel ısıtma","kWh / GJ","2026","Fatura","İdari","DEFRA"),
+    item("Satın alınan soğutma","kWh","2026","Fatura","İdari","DEFRA"),
+  ]},
+];
+
+var KAPSAM3 = [
+  { group: "Kat. 1 — Satın Alınan Mal ve Hizmetler", items: [
+    item("Hammadde — çelik","ton","2026","ERP / satın alma","Satın alma","Ecoinvent"),
+    item("Hammadde — alüminyum","ton","2026","ERP","Satın alma","Ecoinvent"),
+    item("Hammadde — diğer metaller","ton","2026","ERP","Satın alma","Ecoinvent"),
+    item("Kimyasallar / sarf malzeme","ton / ₺","2026","ERP","Satın alma","Ecoinvent"),
+    item("Ambalaj malzemesi","ton","2026","ERP","Satın alma","Ecoinvent"),
+    item("Su tüketimi","m³","2026","Su faturası","İdari","DEFRA"),
+    item("Dış hizmetler (bakım, danışmanlık)","₺","2026","Muhasebe","Finans","EXIOBASE/spend"),
+  ]},
+  { group: "Kat. 2 — Sermaye Malları", items: [
+    item("Makine / ekipman yatırımı","ton / ₺","2026","Yatırım kayıtları","Finans","Ecoinvent/spend"),
+    item("Bina / inşaat","₺","2026","Muhasebe","Finans","spend-based"),
+  ]},
+  { group: "Kat. 3 — Yakıt & Enerji İlişkili (K1/K2 dışı)", items: [
+    item("Yakıt üretim öncesi (WTT)","türetilir","2026","K1 verisinden","Danışman","DEFRA WTT"),
+    item("Elektrik iletim-dağıtım kayıpları (T&D)","türetilir","2026","K2 verisinden","Danışman","DEFRA T&D"),
+  ]},
+  { group: "Kat. 4 — Upstream Taşıma & Dağıtım", items: [
+    item("Gelen lojistik — karayolu","ton-km","2026","Nakliye faturası/irsaliye","Lojistik","DEFRA"),
+    item("Gelen lojistik — denizyolu","ton-km","2026","Navlun belgeleri","Lojistik","DEFRA"),
+    item("Gelen lojistik — havayolu","ton-km","2026","Navlun belgeleri","Lojistik","DEFRA"),
+  ]},
+  { group: "Kat. 5 — Operasyonlarda Oluşan Atık", items: [
+    item("Geri dönüşüme giden atık","ton","2026","Atık beyanı (MoTAT)","Çevre","DEFRA"),
+    item("Düzenli depolama / yakma","ton","2026","Atık beyanı","Çevre","DEFRA"),
+    item("Tehlikeli atık","ton","2026","Atık beyanı","Çevre","DEFRA"),
+  ]},
+  { group: "Kat. 6 — İş Seyahatleri", items: [
+    item("Uçuş — kısa/orta/uzun mesafe","km / segment","2026","Seyahat acentesi raporu","İK / İdari","DEFRA"),
+    item("Otel konaklaması","gece","2026","Masraf kayıtları","İK","DEFRA"),
+    item("Kara taşıtı (kiralık/taksi)","km","2026","Masraf kayıtları","İK","DEFRA"),
+  ]},
+  { group: "Kat. 7 — Çalışan Ulaşımı", items: [
+    item("İşe gidiş-geliş (anket)","km/mod/kişi","2026","Çalışan anketi","İK","DEFRA"),
+    item("Servis araçları","km","2026","Servis sözleşmesi","İdari","DEFRA"),
+    item("Evden çalışma","gün/kişi","2026","İK kayıtları","İK","DEFRA"),
+  ]},
+  { group: "Kat. 9 — Downstream Taşıma & Dağıtım", items: [
+    item("Giden lojistik — karayolu","ton-km","2026","Sevkiyat kayıtları","Lojistik","DEFRA"),
+    item("Giden lojistik — deniz/hava","ton-km","2026","Navlun belgeleri","Lojistik","DEFRA"),
+  ]},
+  { group: "Kat. 12 — Ürün Kullanım Ömrü Sonu", items: [
+    item("Satılan ürün ağırlığı + bertaraf senaryosu","ton","2026","Satış + ürün verisi","Satış","DEFRA"),
+  ]},
+];
+
+var SECTIONS = [
+  { key: 'kurumsal', label: 'Kurumsal Bilgiler', type: 'simple', fields: KURUMSAL },
+  { key: 'kapsam1', label: 'Kapsam 1', type: 'grouped', groups: KAPSAM1 },
+  { key: 'kapsam2', label: 'Kapsam 2', type: 'grouped', groups: KAPSAM2 },
+  { key: 'kapsam3', label: 'Kapsam 3', type: 'grouped', groups: KAPSAM3 },
+];
+
+var API = 'karbon_api.php';
+var state = { role: null, username: null, company: null, activeTab: 'kurumsal', formData: null, printSource: null };
+
+function emptyFormData() {
+  var fd = { kurumsal: [], kapsam1: [], kapsam2: [], kapsam3: [] };
+  KURUMSAL.forEach(function(){ fd.kurumsal.push(''); });
+  [['kapsam1',KAPSAM1],['kapsam2',KAPSAM2],['kapsam3',KAPSAM3]].forEach(function(pair){
+    pair[1].forEach(function(g){
+      g.items.forEach(function(){
+        fd[pair[0]].push({ deger:'', veriSahibi:'', veriTipi:'', notlar:'' });
+      });
+    });
+  });
+  return fd;
+}
+
+function api(action, opts) {
+  opts = opts || {};
+  var url = API + '?action=' + action;
+  var fetchOpts = { headers: {} };
+  if (opts.method) fetchOpts.method = opts.method;
+  if (opts.body) {
+    fetchOpts.method = 'POST';
+    fetchOpts.headers['Content-Type'] = 'application/json';
+    fetchOpts.body = JSON.stringify(opts.body);
+  }
+  if (opts.query) url += '&' + opts.query;
+  return fetch(url, fetchOpts).then(function(res) {
+    return res.json().then(function(json) {
+      if (!res.ok) throw new Error(json.error || ('Hata ' + res.status));
+      return json;
+    });
+  });
+}
+
+function showView(name) {
+  ['login','register','form','admin','print'].forEach(function(v){
+    document.getElementById('view-' + v).classList.add('hidden');
+  });
+  document.getElementById('view-' + name).classList.remove('hidden');
+  document.getElementById('loginErr').style.display = 'none';
+  document.getElementById('registerErr').style.display = 'none';
+}
+
+function setWhoBar() {
+  var bar = document.getElementById('whoBar');
+  if (!state.username) { bar.classList.add('hidden'); return; }
+  bar.classList.remove('hidden');
+  document.getElementById('whoLabel').textContent =
+    (state.role === 'admin' ? 'Admin' : (state.company || state.username)) + ' olarak giriş yapıldı';
+}
+
+function doLogin() {
+  var errEl = document.getElementById('loginErr');
+  errEl.style.display = 'none';
+  var username = document.getElementById('loginUser').value.trim();
+  var password = document.getElementById('loginPass').value;
+  if (!username || !password) return;
+  api('login', { body: { username: username, password: password } }).then(function(res) {
+    afterAuth(res);
+  }).catch(function(e) {
+    errEl.textContent = '✗ ' + e.message;
+    errEl.style.display = 'block';
+  });
+}
+
+function doRegister() {
+  var errEl = document.getElementById('registerErr');
+  errEl.style.display = 'none';
+  var company = document.getElementById('regCompany').value.trim();
+  var username = document.getElementById('regUser').value.trim();
+  var pass = document.getElementById('regPass').value;
+  var pass2 = document.getElementById('regPass2').value;
+  if (pass !== pass2) {
+    errEl.textContent = '✗ Parolalar eşleşmiyor';
+    errEl.style.display = 'block';
+    return;
+  }
+  api('register', { body: { username: username, password: pass, company: company } }).then(function(res) {
+    afterAuth(res);
+  }).catch(function(e) {
+    errEl.textContent = '✗ ' + e.message;
+    errEl.style.display = 'block';
+  });
+}
+
+function afterAuth(res) {
+  state.username = res.username;
+  state.role = res.role;
+  state.company = res.company;
+  setWhoBar();
+  if (state.role === 'admin') {
+    loadAdminList();
+  } else {
+    loadOwnForm();
+  }
+}
+
+function logout() {
+  api('logout').finally(function() {
+    state.username = null; state.role = null; state.company = null;
+    setWhoBar();
+    showView('login');
+  });
+}
+
+function loadOwnForm() {
+  api('get-form', { method: 'GET' }).then(function(res) {
+    state.formData = res.data || emptyFormData();
+    var savedNote = document.getElementById('savedNote');
+    savedNote.textContent = res.data && res.data.lastSaved
+      ? ('Son kaydedilme: ' + new Date(res.data.lastSaved).toLocaleString('tr-TR'))
+      : 'Henüz kaydedilmedi';
+    renderTabs();
+    renderSection(state.activeTab);
+    showView('form');
+  });
+}
+
+function renderTabs() {
+  var tabs = document.getElementById('tabs');
+  tabs.innerHTML = '';
+  SECTIONS.forEach(function(s) {
+    var el = document.createElement('div');
+    el.className = 'tab' + (s.key === state.activeTab ? ' active' : '');
+    el.textContent = s.label;
+    el.onclick = function() { switchTab(s.key); };
+    tabs.appendChild(el);
+  });
+}
+
+function switchTab(key) {
+  collectSectionFromDOM(state.activeTab);
+  state.activeTab = key;
+  renderTabs();
+  renderSection(key);
+}
+
+function renderSection(key) {
+  var section = SECTIONS.filter(function(s){ return s.key === key; })[0];
+  var root = document.getElementById('sectionContent');
+  root.innerHTML = '';
+
+  if (section.type === 'simple') {
+    section.fields.forEach(function(label, i) {
+      var wrap = document.createElement('div');
+      wrap.className = 'field';
+      wrap.innerHTML = '<label>' + escapeHtml(label) + '</label>' +
+        '<textarea rows="1" data-idx="' + i + '">' + escapeHtml(state.formData.kurumsal[i] || '') + '</textarea>';
+      root.appendChild(wrap);
+    });
+  } else {
+    var flatIdx = 0;
+    section.groups.forEach(function(g) {
+      var gTitle = document.createElement('div');
+      gTitle.className = 'group-title';
+      gTitle.textContent = g.group;
+      root.appendChild(gTitle);
+
+      g.items.forEach(function(it) {
+        var idx = flatIdx++;
+        var rowData = state.formData[key][idx] || { deger:'', veriSahibi:'', veriTipi:'', notlar:'' };
+        var card = document.createElement('div');
+        card.className = 'item-card';
+        card.innerHTML =
+          '<div class="item-name">' + escapeHtml(it.name) + '</div>' +
+          '<div class="item-ref"><b>Birim:</b> ' + escapeHtml(it.unit) +
+            ' &nbsp;·&nbsp; <b>Dönem:</b> ' + escapeHtml(it.period) +
+            ' &nbsp;·&nbsp; <b>Kanıt Belgesi:</b> ' + escapeHtml(it.evidence) +
+            ' &nbsp;·&nbsp; <b>Sorumlu Birim:</b> ' + escapeHtml(it.dept) +
+            ' &nbsp;·&nbsp; <b>EF Kaynağı:</b> ' + escapeHtml(it.efSource) + '</div>' +
+          '<div class="item-grid">' +
+            '<div><label>Değer</label><input data-field="deger" data-idx="' + idx + '" value="' + escapeAttr(rowData.deger) + '"></div>' +
+            '<div><label>Veri Sahibi</label><input data-field="veriSahibi" data-idx="' + idx + '" value="' + escapeAttr(rowData.veriSahibi) + '"></div>' +
+            '<div><label>Veri Tipi</label><select data-field="veriTipi" data-idx="' + idx + '">' +
+              '<option value=""' + (rowData.veriTipi==='' ? ' selected' : '') + '>—</option>' +
+              '<option value="Birincil"' + (rowData.veriTipi==='Birincil' ? ' selected' : '') + '>Birincil</option>' +
+              '<option value="İkincil"' + (rowData.veriTipi==='İkincil' ? ' selected' : '') + '>İkincil</option>' +
+            '</select></div>' +
+            '<div class="full"><label>Notlar</label><input data-field="notlar" data-idx="' + idx + '" value="' + escapeAttr(rowData.notlar) + '"></div>' +
+          '</div>';
+        root.appendChild(card);
+      });
+    });
+  }
+}
+
+function collectSectionFromDOM(key) {
+  var section = SECTIONS.filter(function(s){ return s.key === key; })[0];
+  if (!section) return;
+  if (section.type === 'simple') {
+    document.querySelectorAll('#sectionContent textarea[data-idx]').forEach(function(el) {
+      state.formData.kurumsal[parseInt(el.getAttribute('data-idx'),10)] = el.value;
+    });
+  } else {
+    document.querySelectorAll('#sectionContent [data-field]').forEach(function(el) {
+      var idx = parseInt(el.getAttribute('data-idx'), 10);
+      var field = el.getAttribute('data-field');
+      state.formData[key][idx][field] = el.value;
+    });
+  }
+}
+
+function saveForm() {
+  collectSectionFromDOM(state.activeTab);
+  api('save-form', { body: state.formData }).then(function(res) {
+    document.getElementById('savedNote').textContent = 'Son kaydedilme: ' + new Date(res.lastSaved).toLocaleString('tr-TR');
+  }).catch(function(e) {
+    alert('Kaydetme hatası: ' + e.message);
+  });
+}
+
+function loadAdminList() {
+  api('admin-list', { method: 'GET' }).then(function(res) {
+    var body = document.getElementById('adminTableBody');
+    body.innerHTML = '';
+    if (!res.customers.length) {
+      body.innerHTML = '<tr><td colspan="5" style="color:var(--text-mid)">Henüz kayıtlı müşteri yok.</td></tr>';
+    }
+    res.customers.forEach(function(c) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + escapeHtml(c.company || '—') + '</td>' +
+        '<td>' + escapeHtml(c.username) + '</td>' +
+        '<td>' + (c.createdAt ? new Date(c.createdAt).toLocaleDateString('tr-TR') : '—') + '</td>' +
+        '<td>' + (c.lastSaved ? new Date(c.lastSaved).toLocaleString('tr-TR') : 'Henüz yok') + '</td>' +
+        '<td></td>';
+      var btn = document.createElement('button');
+      btn.className = 'btn btn-secondary';
+      btn.textContent = 'Görüntüle';
+      btn.onclick = function() { goToPrint(c.username); };
+      tr.lastElementChild.appendChild(btn);
+      body.appendChild(tr);
+    });
+    showView('admin');
+  });
+}
+
+function goToPrint(who) {
+  if (who === 'self') {
+    collectSectionFromDOM(state.activeTab);
+    renderPrint(state.formData, state.company || state.username);
+    state.printSource = 'self';
+    showView('print');
+  } else {
+    api('admin-get-form', { method: 'GET', query: 'user=' + encodeURIComponent(who) }).then(function(res) {
+      renderPrint(res.data || emptyFormData(), res.company || res.username);
+      state.printSource = 'admin';
+      showView('print');
+    });
+  }
+}
+
+function backFromPrint() {
+  if (state.printSource === 'admin') loadAdminList();
+  else showView('form');
+}
+
+function renderPrint(fd, companyName) {
+  var html = '<div class="print-header"><div>' +
+    '<h1>Kurumsal Karbon Ayak İzi — Veri Raporu</h1>' +
+    '<div class="meta">' + escapeHtml(companyName || '') + '</div></div>' +
+    '<div class="meta">Oluşturulma: ' + new Date().toLocaleString('tr-TR') + '</div></div>';
+
+  html += '<table><caption>Kurumsal Bilgiler</caption><thead><tr><th style="width:45%">Bilgi / Karar</th><th>Değer</th></tr></thead><tbody>';
+  KURUMSAL.forEach(function(label, i) {
+    html += '<tr><td>' + escapeHtml(label) + '</td><td>' + escapeHtml((fd.kurumsal && fd.kurumsal[i]) || '') + '</td></tr>';
+  });
+  html += '</tbody></table>';
+
+  [
+    ['kapsam1', KAPSAM1, 'Kapsam 1 — Doğrudan Emisyonlar'],
+    ['kapsam2', KAPSAM2, 'Kapsam 2 — Satın Alınan Enerji'],
+    ['kapsam3', KAPSAM3, 'Kapsam 3 — Değer Zinciri Emisyonları'],
+  ].forEach(function(triple) {
+    var key = triple[0], groups = triple[1], title = triple[2];
+    html += '<table><caption>' + title + '</caption><thead><tr>' +
+      '<th>Kalem</th><th>Birim</th><th>Dönem</th><th>Değer</th><th>Veri Tipi</th>' +
+      '<th>Veri Sahibi</th><th>Kanıt Belgesi</th><th>Sorumlu Birim</th><th>EF Kaynağı</th><th>Notlar</th></tr></thead><tbody>';
+    var idx = 0;
+    groups.forEach(function(g) {
+      html += '<tr><td colspan="10" style="background:var(--gray-light);font-weight:700">' + escapeHtml(g.group) + '</td></tr>';
+      g.items.forEach(function(it) {
+        var row = (fd[key] && fd[key][idx]) || { deger:'', veriSahibi:'', veriTipi:'', notlar:'' };
+        html += '<tr>' +
+          '<td>' + escapeHtml(it.name) + '</td>' +
+          '<td>' + escapeHtml(it.unit) + '</td>' +
+          '<td>' + escapeHtml(it.period) + '</td>' +
+          '<td>' + escapeHtml(row.deger) + '</td>' +
+          '<td>' + escapeHtml(row.veriTipi) + '</td>' +
+          '<td>' + escapeHtml(row.veriSahibi) + '</td>' +
+          '<td>' + escapeHtml(it.evidence) + '</td>' +
+          '<td>' + escapeHtml(it.dept) + '</td>' +
+          '<td>' + escapeHtml(it.efSource) + '</td>' +
+          '<td>' + escapeHtml(row.notlar) + '</td>' +
+          '</tr>';
+        idx++;
+      });
+    });
+    html += '</tbody></table>';
+  });
+
+  document.getElementById('printContent').innerHTML = html;
+}
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"]/g, function(c) {
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c];
+  });
+}
+function escapeAttr(s) { return escapeHtml(s); }
+
+api('whoami', { method: 'GET' }).then(function(res) {
+  if (!res.loggedIn) { showView('login'); return; }
+  state.username = res.username;
+  state.role = res.role;
+  state.company = res.company;
+  setWhoBar();
+  if (state.role === 'admin') loadAdminList();
+  else loadOwnForm();
+}).catch(function() { showView('login'); });
+</script>
+</body>
+</html>
