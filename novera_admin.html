@@ -207,6 +207,24 @@ var PAGES = [
   { id:'strateji', label:'Kurumsal Strateji',         file:'novera_strateji.html', accent:'#1A3A5C' },
 ];
 
+var mode = 'page';
+var navState = null;
+
+var NAV_KEYS    = ['hakkimizda', 'hizmetler', 'surecimiz', 'referanslar', 'standartlar', 'iletisim'];
+var NAV_TITLES  = ['Hakkımızda', 'Hizmetler', 'Süreç / Model', 'Referanslar', 'Standartlar', 'İletişim'];
+var NAV_DEFAULTS = ['Hakkımızda', 'Hizmetler', 'Süreç', 'Referanslar', 'Standartlar', 'İletişim'];
+
+var IMAGES = [
+  { file:'novera_logo.png',        label:'Site Logosu',                   usedIn:'Tüm sayfalar (üst menü ve footer)' },
+  { file:'novera_hero_main.jpg',   label:'Ana Sayfa — Hero Görseli',       usedIn:'Ana Sayfa (hero arka planı)' },
+  { file:'novera_carbon.jpg',      label:'Karbon Yönetimi Görseli',        usedIn:'Ana Sayfa (hizmet kartı), Karbon Yönetimi sayfası (hero)' },
+  { file:'novera_energy.jpg',      label:'Enerji Verimliliği Görseli',     usedIn:'Ana Sayfa (hizmet kartı), Enerji Verimliliği sayfası (hero)' },
+  { file:'novera_strategy.jpg',    label:'Kurumsal Strateji Görseli',      usedIn:'Ana Sayfa (hizmet kartı), Kurumsal Strateji sayfası (hero)' },
+  { file:'novera_esg_bg.jpg',      label:'ESG Görseli',                    usedIn:'Ana Sayfa (hizmet kartı), ESG sayfası (hero)' },
+  { file:'novera_finance_bg.jpg',  label:'Sürdürülebilir Finans Görseli',  usedIn:'Ana Sayfa (hizmet kartı), Sürdürülebilir Finans sayfası (hero)' },
+  { file:'novera_marka_bg.jpg',    label:'Marka ve İletişim Görseli',      usedIn:'Ana Sayfa (hizmet kartı), Marka ve İletişim sayfası (hero)' },
+];
+
 // ── FOLDER SELECT ─────────────────────────────────────
 async function selectFolder() {
   var errEl = document.getElementById('setupErr');
@@ -236,9 +254,29 @@ function bootApp() {
 
   var nav = document.getElementById('nav');
   nav.innerHTML = '';
+
+  var imgItem = document.createElement('div');
+  imgItem.className = 'nav-item';
+  imgItem.dataset.navkey = 'images';
+  imgItem.innerHTML = '<span class="nav-dot"></span>🖼 Görseller';
+  imgItem.onclick = function() { loadImages(); };
+  nav.appendChild(imgItem);
+
+  var navMenuItem = document.createElement('div');
+  navMenuItem.className = 'nav-item';
+  navMenuItem.dataset.navkey = 'nav';
+  navMenuItem.innerHTML = '<span class="nav-dot"></span>🧭 Navigasyon';
+  navMenuItem.onclick = function() { loadNav(); };
+  nav.appendChild(navMenuItem);
+
+  var sep = document.createElement('div');
+  sep.style.cssText = 'height:1px;background:rgba(255,255,255,.08);margin:8px 14px';
+  nav.appendChild(sep);
+
   PAGES.forEach(function(p) {
     var el = document.createElement('div');
     el.className = 'nav-item';
+    el.dataset.navkey = p.id;
     el.innerHTML = '<span class="nav-dot"></span>' + p.label;
     el.onclick = function() { loadPage(p); };
     nav.appendChild(el);
@@ -258,20 +296,22 @@ async function readPage(file) {
 }
 
 async function savePage(file, newContent) {
+  var origFh  = await dirHandle.getFileHandle(file);
+  var origF   = await origFh.getFile();
+  var origBuf = await origF.arrayBuffer();
+  var origBytes = new Uint8Array(origBuf);
+  var hasBom = origBytes.length >= 3 && origBytes[0] === 0xEF && origBytes[1] === 0xBB && origBytes[2] === 0xBF;
   // Backup
   try {
-    var origFh  = await dirHandle.getFileHandle(file);
-    var origF   = await origFh.getFile();
-    var origTxt = await origF.text();
-    var bakFh   = await dirHandle.getFileHandle(file + '.bak', { create: true });
-    var bakWr   = await bakFh.createWritable();
-    await bakWr.write(origTxt);
+    var bakFh = await dirHandle.getFileHandle(file + '.bak', { create: true });
+    var bakWr = await bakFh.createWritable();
+    await bakWr.write(origBuf);
     await bakWr.close();
   } catch(e) { /* backup failed, continue */ }
-  // Write
+  // Write (orijinal dosyada BOM varsa korunur)
   var fh = await dirHandle.getFileHandle(file, { create: false });
   var wr = await fh.createWritable();
-  await wr.write(newContent);
+  await wr.write((hasBom ? '﻿' : '') + newContent);
   await wr.close();
 }
 
@@ -301,39 +341,149 @@ function extractStats(html) {
   return [];
 }
 
+function extractSEO(html) {
+  return {
+    title:    ex(html, /<title>([\s\S]*?)<\/title>/),
+    desc:     ex(html, /name="description" content="([^"]*)"/),
+    keywords: ex(html, /name="keywords" content="([^"]*)"/),
+  };
+}
+
+// Tüm "section-eyebrow + section-title (+ section-lead)" bloklarını sırayla bulur.
+var SECTION_BLOCK_RE = /<div class="section-eyebrow"[^>]*>([^<]*)<\/div>\s*<h2 class="section-title"[^>]*>([\s\S]*?)<\/h2>(?:\s*<p class="section-lead">([\s\S]*?)<\/p>)?/g;
+
+function scanSectionBlocks(html) {
+  return exAll(html, SECTION_BLOCK_RE).map(function(m) {
+    return { eyebrow: m[0], title: m[1], lead: m[2] || '' };
+  });
+}
+
+function ctaSlice(html) {
+  var start = html.indexOf('<section class="cta-section"');
+  if (start === -1) return null;
+  var end = html.indexOf('</section>', start);
+  if (end === -1) return null;
+  end += '</section>'.length;
+  return { start: start, end: end, text: html.slice(start, end) };
+}
+
+function extractCTA(html) {
+  var slice = ctaSlice(html);
+  if (!slice) return null;
+  var t = slice.text;
+  return {
+    heading: ex(t, /<h2>([\s\S]*?)<\/h2>/),
+    desc:    ex(t, /<\/h2>\s*<p>([\s\S]*?)<\/p>/),
+    btn:     ex(t, /class="btn-primary"[^>]*>([^<]*)<\/a>/),
+  };
+}
+
 function getContent(id, html) {
+  var base = {
+    seo:      extractSEO(html),
+    sections: scanSectionBlocks(html),
+    cta:      extractCTA(html),
+  };
   if (id === 'main') {
     var svcs = exAll(html, /<div class="svc-body">[\s\S]*?<h3>([^<]+)<\/h3>\s*<p>([^<]+)<\/p>/g).slice(0,6)
                  .map(function(h){ return { title: h[0], desc: h[1] }; });
-    return {
-      type: 'main',
-      hero: {
-        eyebrow: ex(html, /class="hero-eyebrow">([^<]+)<\/div>/),
-        line1:   ex(html, /<h1>([^<]+)<br>/),
-        line2:   ex(html, /<br><em>([^<]+)<\/em><\/h1>/),
-        desc:    ex(html, /class="hero-desc">([\s\S]*?)<\/p>/),
-      },
-      stats:    extractStats(html),
-      services: svcs,
-      footer:   ex(html, /class="footer-desc">([^<]+)<\/p>/),
-      email:    ex(html, /href="mailto:([^"]+)"/),
-    };
-  }
-  return {
-    type: 'subpage',
-    hero: {
+    base.type = 'main';
+    base.hero = {
       eyebrow: ex(html, /class="hero-eyebrow">([^<]+)<\/div>/),
-      h1:      ex(html, /<h1>([\s\S]*?)<\/h1>/),
-      desc:    ex(html, /class="page-hero-desc">([\s\S]*?)<\/p>/),
-    },
-    stats:  extractStats(html),
-    footer: ex(html, /class="footer-desc">([^<]+)<\/p>/),
-    email:  ex(html, /href="mailto:([^"]+)"/),
+      line1:   ex(html, /<h1>([^<]+)<br>/),
+      line2:   ex(html, /<br><em>([^<]+)<\/em><\/h1>/),
+      desc:    ex(html, /class="hero-desc">([\s\S]*?)<\/p>/),
+    };
+    base.stats    = extractStats(html);
+    base.services = svcs;
+    base.footer   = ex(html, /class="footer-desc">([^<]+)<\/p>/);
+    base.email    = ex(html, /href="mailto:([^"]+)"/);
+    return base;
+  }
+  base.type = 'subpage';
+  base.hero = {
+    eyebrow: ex(html, /class="hero-eyebrow">([^<]+)<\/div>/),
+    h1:      ex(html, /<h1>([\s\S]*?)<\/h1>/),
+    desc:    ex(html, /class="page-hero-desc">([\s\S]*?)<\/p>/),
   };
+  base.stats  = extractStats(html);
+  base.footer = ex(html, /class="footer-desc">([^<]+)<\/p>/);
+  base.email  = ex(html, /href="mailto:([^"]+)"/);
+  return base;
 }
 
 // ── CONTENT SAVE ─────────────────────────────────────
 function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+// Bir regex'in TÜM eşleşmelerini { index, text, groups } olarak toplar.
+function collectMatches(html, re) {
+  var out = [], m;
+  re.lastIndex = 0;
+  while ((m = re.exec(html)) !== null) {
+    out.push({ index: m.index, text: m[0], groups: Array.from(m).slice(1) });
+  }
+  return out;
+}
+
+// Eşleşmeleri sondan başa doğru, pozisyonel olarak değiştirir — aynı metin
+// birden çok yerde geçse bile yalnızca doğru oluşum güncellenir.
+function spliceBlocks(html, re, editFn) {
+  var matches = collectMatches(html, re);
+  for (var i = matches.length - 1; i >= 0; i--) {
+    var newText = editFn(matches[i], i);
+    if (newText != null && newText !== matches[i].text) {
+      html = html.slice(0, matches[i].index) + newText + html.slice(matches[i].index + matches[i].text.length);
+    }
+  }
+  return html;
+}
+
+function applySEO(html, prev, changes) {
+  if (!changes || !prev) return html;
+  if (changes.title !== undefined && changes.title !== prev.title) {
+    html = html.replace(/(<title>)[\s\S]*?(<\/title>)/, '$1' + changes.title + '$2');
+    html = html.replace(/(property="og:title" content=")[^"]*(")/, '$1' + esc(changes.title) + '$2');
+    html = html.replace(/(name="twitter:title" content=")[^"]*(")/, '$1' + esc(changes.title) + '$2');
+  }
+  if (changes.desc !== undefined && changes.desc !== prev.desc) {
+    html = html.replace(/(name="description" content=")[^"]*(")/, '$1' + esc(changes.desc) + '$2');
+    html = html.replace(/(property="og:description" content=")[^"]*(")/, '$1' + esc(changes.desc) + '$2');
+    html = html.replace(/(name="twitter:description" content=")[^"]*(")/, '$1' + esc(changes.desc) + '$2');
+  }
+  if (changes.keywords !== undefined && changes.keywords !== prev.keywords)
+    html = html.replace(/(name="keywords" content=")[^"]*(")/, '$1' + esc(changes.keywords) + '$2');
+  return html;
+}
+
+function applySections(html, prevSections, changeSections) {
+  if (!Array.isArray(changeSections) || !prevSections) return html;
+  return spliceBlocks(html, SECTION_BLOCK_RE, function(match, i) {
+    var ps = prevSections[i], ns = changeSections[i];
+    if (!ps || !ns) return null;
+    var t = match.text;
+    if (ns.eyebrow !== undefined && ns.eyebrow !== ps.eyebrow)
+      t = t.replace(/(<div class="section-eyebrow"[^>]*>)[^<]*(<\/div>)/, '$1' + ns.eyebrow + '$2');
+    if (ns.title !== undefined && ns.title !== ps.title)
+      t = t.replace(/(<h2 class="section-title"[^>]*>)[\s\S]*?(<\/h2>)/, '$1' + ns.title + '$2');
+    if (ns.lead !== undefined && ns.lead !== ps.lead && t.indexOf('section-lead') !== -1)
+      t = t.replace(/(<p class="section-lead">)[\s\S]*?(<\/p>)/, '$1' + ns.lead + '$2');
+    return t;
+  });
+}
+
+function applyCTA(html, prev, changes) {
+  if (!changes || !prev) return html;
+  var slice = ctaSlice(html);
+  if (!slice) return html;
+  var t = slice.text;
+  if (changes.heading !== undefined && changes.heading !== prev.heading)
+    t = t.replace(/(<h2>)[\s\S]*?(<\/h2>)/, '$1' + changes.heading + '$2');
+  if (changes.desc !== undefined && changes.desc !== prev.desc)
+    t = t.replace(/(<\/h2>\s*<p>)[\s\S]*?(<\/p>)/, '$1' + changes.desc + '$2');
+  if (changes.btn !== undefined && changes.btn !== prev.btn)
+    t = t.replace(/(class="btn-primary"[^>]*>)[^<]*(<\/a>)/, '$1' + changes.btn + '$2');
+  return html.slice(0, slice.start) + t + html.slice(slice.end);
+}
 
 function applyChanges(id, prev, changes, html) {
   var h   = changes.hero || {};
@@ -381,19 +531,34 @@ function applyChanges(id, prev, changes, html) {
   if (changes.email !== undefined && changes.email !== prev.email)
     html = html.split(prev.email).join(changes.email);
 
+  html = applySEO(html, prev.seo, changes.seo);
+  html = applySections(html, prev.sections, changes.sections);
+  html = applyCTA(html, prev.cta, changes.cta);
+
   return html;
+}
+
+// ── MODE / NAV HELPERS ────────────────────────────────
+function switchModeGuard() {
+  if (state.dirty && !confirm('Kaydedilmemiş değişiklikler var. Devam edilsin mi?')) return false;
+  return true;
+}
+function setActiveNav(key) {
+  document.querySelectorAll('.nav-item').forEach(function(el) {
+    el.classList.toggle('active', el.dataset.navkey === key);
+  });
 }
 
 // ── LOAD PAGE ─────────────────────────────────────────
 function loadPage(page) {
-  if (state.dirty && !confirm('Kaydedilmemiş değişiklikler var. Devam edilsin mi?')) return;
-  document.querySelectorAll('.nav-item').forEach(function(el) {
-    el.classList.toggle('active', el.textContent.trim() === page.label);
-  });
+  if (!switchModeGuard()) return;
+  mode = 'page';
+  setActiveNav(page.id);
   document.getElementById('hdrPage').textContent = page.label;
   document.getElementById('hdrSep').style.display = '';
   document.getElementById('hdrSub').style.display = '';
   document.getElementById('openBtn').style.display = '';
+  document.getElementById('saveBtn').style.display = '';
   document.documentElement.style.setProperty('--accent', page.accent);
   state = { id: page.id, file: page.file, data: null, dirty: false };
   setDirty(false);
@@ -403,6 +568,213 @@ function loadPage(page) {
     state.data = getContent(page.id, html);
     render(state.data);
   }).catch(function(e) { toast('✗ Dosya okunamadı: ' + e.message, 'err'); });
+}
+
+// ── GÖRSELLER (global) ────────────────────────────────
+function loadImages() {
+  if (!switchModeGuard()) return;
+  mode = 'images';
+  state = { id: null, file: null, data: null, dirty: false };
+  setDirty(false);
+  setActiveNav('images');
+  document.getElementById('hdrPage').textContent = 'Görseller';
+  document.getElementById('hdrSep').style.display = 'none';
+  document.getElementById('hdrSub').style.display = 'none';
+  document.getElementById('openBtn').style.display = 'none';
+  document.getElementById('saveBtn').style.display = 'none';
+  document.documentElement.style.setProperty('--accent', '#1A3A5C');
+  renderImagesGrid();
+}
+
+function formatSize(bytes) {
+  if (bytes > 1024 * 1024) return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+  return Math.round(bytes / 1024) + ' KB';
+}
+
+function renderImagesGrid() {
+  var wrap = document.getElementById('content');
+  wrap.innerHTML = '<div class="page-grid" id="imgGrid" style="max-width:1060px"></div>';
+  var grid = document.getElementById('imgGrid');
+  IMAGES.forEach(function(img, i) {
+    var card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML =
+      '<div class="card-head"><span class="card-title"><span class="card-bar"></span>' + img.label + '</span></div>' +
+      '<div class="card-body" style="display:flex;gap:14px;align-items:center">' +
+        '<div style="width:120px;height:80px;border-radius:6px;overflow:hidden;background:var(--bg);' +
+          'flex-shrink:0;display:flex;align-items:center;justify-content:center">' +
+          '<img id="imgPrev_' + i + '" style="max-width:100%;max-height:100%;object-fit:cover" alt="">' +
+        '</div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-size:12px;color:var(--muted);margin-bottom:4px"><code>' + img.file + '</code> · ' +
+            '<span id="imgSize_' + i + '">—</span></div>' +
+          '<div class="hint" style="margin:0 0 9px">' + img.usedIn + '</div>' +
+          '<button class="btn btn-primary" type="button">Değiştir</button>' +
+        '</div>' +
+      '</div>';
+    card.querySelector('button').onclick = function() { replaceImage(i); };
+    grid.appendChild(card);
+    loadImagePreview(img.file, i);
+  });
+}
+
+async function loadImagePreview(file, i) {
+  var sizeEl = document.getElementById('imgSize_' + i);
+  try {
+    var fh = await dirHandle.getFileHandle(file);
+    var f  = await fh.getFile();
+    var imgEl = document.getElementById('imgPrev_' + i);
+    if (imgEl) imgEl.src = URL.createObjectURL(f);
+    if (sizeEl) sizeEl.textContent = formatSize(f.size);
+  } catch(e) {
+    if (sizeEl) sizeEl.textContent = 'bulunamadı';
+  }
+}
+
+async function replaceImage(i) {
+  var img = IMAGES[i];
+  try {
+    var handles = await window.showOpenFilePicker({
+      types: [{ description: 'Görsel', accept: { 'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.gif'] } }],
+      multiple: false,
+    });
+    var newFile = await handles[0].getFile();
+    var bytes = await newFile.arrayBuffer();
+    try {
+      var oldFh   = await dirHandle.getFileHandle(img.file);
+      var oldFile = await oldFh.getFile();
+      var oldBytes = await oldFile.arrayBuffer();
+      var bakFh = await dirHandle.getFileHandle(img.file + '.bak', { create: true });
+      var bakWr = await bakFh.createWritable();
+      await bakWr.write(oldBytes);
+      await bakWr.close();
+    } catch(e) { /* yedek alınamadı, devam */ }
+    var fh = await dirHandle.getFileHandle(img.file, { create: true });
+    var wr = await fh.createWritable();
+    await wr.write(bytes);
+    await wr.close();
+    toast('✓ ' + img.label + ' güncellendi', 'ok');
+    loadImagePreview(img.file, i);
+  } catch(e) {
+    if (e.name !== 'AbortError') toast('✗ Hata: ' + e.message, 'err');
+  }
+}
+
+// ── NAVİGASYON (global) ───────────────────────────────
+// Değişiklikler SADECE .nav-links ve .mobile-nav blokları içine uygulanır —
+// footer'daki aynı #anchor'a giden ama farklı metinli linklere dokunulmaz.
+function navKeyRe(key) {
+  return new RegExp('(<a [^>]*href="[^"]*#' + key + '"[^>]*>)([^<]*)(<\\/a>)', 'g');
+}
+
+function navLinksSlice(html) {
+  var start = html.indexOf('<ul class="nav-links">');
+  if (start === -1) return null;
+  var end = html.indexOf('</ul>', start);
+  if (end === -1) return null;
+  end += '</ul>'.length;
+  return { start: start, end: end, text: html.slice(start, end) };
+}
+
+function mobileNavSlice(html) {
+  var divStart = html.indexOf('<div class="mobile-nav"');
+  if (divStart === -1) return null;
+  var ulStart = html.indexOf('<ul', divStart);
+  if (ulStart === -1) return null;
+  var end = html.indexOf('</ul>', ulStart);
+  if (end === -1) return null;
+  end += '</ul>'.length;
+  return { start: ulStart, end: end, text: html.slice(ulStart, end) };
+}
+
+function applyNavLabelsToSlice(sliceText, labels) {
+  NAV_KEYS.forEach(function(key, i) {
+    if (labels[i] === undefined) return;
+    sliceText = sliceText.replace(navKeyRe(key), '$1' + labels[i] + '$3');
+  });
+  return sliceText;
+}
+
+async function readNavLabels() {
+  var html = await readPage('index.html');
+  var slice = navLinksSlice(html);
+  if (!slice) return NAV_DEFAULTS.slice();
+  return NAV_KEYS.map(function(key, i) {
+    var m = navKeyRe(key).exec(slice.text);
+    return m ? m[2].trim() : NAV_DEFAULTS[i];
+  });
+}
+
+async function saveNavLabels(newLabels) {
+  var changedFiles = 0;
+  for (var p = 0; p < PAGES.length; p++) {
+    var file = PAGES[p].file;
+    var html;
+    try { html = await readPage(file); } catch(e) { continue; }
+    var orig = html;
+
+    var navSlice = navLinksSlice(html);
+    if (navSlice) {
+      var newNavText = applyNavLabelsToSlice(navSlice.text, newLabels);
+      if (newNavText !== navSlice.text)
+        html = html.slice(0, navSlice.start) + newNavText + html.slice(navSlice.end);
+    }
+
+    var mSlice = mobileNavSlice(html);
+    if (mSlice) {
+      var newMobText = applyNavLabelsToSlice(mSlice.text, newLabels);
+      if (newMobText !== mSlice.text)
+        html = html.slice(0, mSlice.start) + newMobText + html.slice(mSlice.end);
+    }
+
+    if (html !== orig) {
+      await savePage(file, html);
+      changedFiles++;
+    }
+  }
+  return changedFiles;
+}
+
+function loadNav() {
+  if (!switchModeGuard()) return;
+  mode = 'nav';
+  state = { id: null, file: null, data: null, dirty: false };
+  setDirty(false);
+  setActiveNav('nav');
+  document.getElementById('hdrPage').textContent = 'Navigasyon';
+  document.getElementById('hdrSep').style.display = 'none';
+  document.getElementById('hdrSub').style.display = 'none';
+  document.getElementById('openBtn').style.display = 'none';
+  document.getElementById('saveBtn').style.display = '';
+  document.documentElement.style.setProperty('--accent', '#1A3A5C');
+  document.getElementById('content').innerHTML =
+    '<div class="loading"><div class="spin"></div>Okunuyor…</div>';
+  readNavLabels().then(function(labels) {
+    navState = labels;
+    renderNav(labels);
+  }).catch(function(e) { toast('✗ Okunamadı: ' + e.message, 'err'); });
+}
+
+function renderNav(labels) {
+  var wrap = document.getElementById('content');
+  wrap.innerHTML = '';
+  var grid = document.createElement('div');
+  grid.className = 'page-grid';
+  var body = '';
+  NAV_KEYS.forEach(function(key, i) {
+    body += mkField(NAV_TITLES[i], 'nav[' + i + ']', labels[i], false, '');
+  });
+  body += '<div class="hint" style="margin-top:6px">Bu etiketler kaydedildiğinde 7 sayfanın tüm üst menülerinde ' +
+    '(ve ana sayfanın mobil menüsünde) aynı anda güncellenir.</div>';
+  grid.appendChild(mkCard('Navigasyon Menüsü Etiketleri', body));
+  wrap.appendChild(grid);
+  wrap.querySelectorAll('input,textarea').forEach(function(el) {
+    el.addEventListener('input', function() {
+      var f = el.closest('.field');
+      if (f) f.classList.add('changed');
+      setDirty(true);
+    });
+  });
 }
 
 function openInBrowser() {
@@ -419,7 +791,14 @@ function render(data) {
   grid.appendChild(heroCard(data));
   if (data.stats && data.stats.length) grid.appendChild(statsCard(data.stats));
   if (data.type === 'main' && data.services && data.services.length) grid.appendChild(servicesCard(data.services));
+  if (data.sections && data.sections.length)
+    sectionsCards(data.sections).forEach(function(c) { grid.appendChild(c); });
+  if (data.cta) {
+    var ctaEl = ctaCard(data.cta);
+    if (ctaEl) grid.appendChild(ctaEl);
+  }
   grid.appendChild(footerCard(data));
+  grid.appendChild(seoCard(data.seo));
   wrap.appendChild(grid);
   wrap.querySelectorAll('input,textarea').forEach(function(el) {
     el.addEventListener('input', function() {
@@ -500,6 +879,35 @@ function footerCard(data) {
     mkField('İletişim E-posta', 'email', data.email, false, ''));
 }
 
+function sectionsCards(sections) {
+  return sections.map(function(s, i) {
+    var body = mkField('Üst Etiket', 'sections[' + i + '].eyebrow', s.eyebrow, false, '');
+    body += mkField('Başlık (HTML kabul eder)', 'sections[' + i + '].title', s.title, false,
+      '<code>&lt;br&gt;</code> ve <code>&lt;em&gt;</code> etiketleri kullanılabilir');
+    if (s.lead)
+      body += mkField('Açıklama', 'sections[' + i + '].lead', s.lead, true, '');
+    return mkCard('Bölüm Başlığı — ' + (s.eyebrow || (i + 1)), body);
+  });
+}
+
+function ctaCard(cta) {
+  if (!cta) return null;
+  var body = mkField('Başlık (HTML kabul eder)', 'cta.heading', cta.heading, false,
+    '<code>&lt;br&gt;</code> ve <code>&lt;em&gt;</code> etiketleri kullanılabilir');
+  body += mkField('Açıklama', 'cta.desc', cta.desc, true, '');
+  body += mkField('Buton Metni', 'cta.btn', cta.btn, false, '');
+  return mkCard('İletişime Geçin (CTA)', body);
+}
+
+function seoCard(seo) {
+  return mkCard('SEO Ayarları',
+    mkField('Sayfa Başlığı', 'seo.title', seo.title, false,
+      '<code>&lt;title&gt;</code>, <code>og:title</code> ve <code>twitter:title</code> birlikte güncellenir') +
+    mkField('Açıklama (meta description)', 'seo.desc', seo.desc, true,
+      '<code>meta description</code>, <code>og:description</code> ve <code>twitter:description</code> birlikte güncellenir') +
+    mkField('Anahtar Kelimeler', 'seo.keywords', seo.keywords, false, ''));
+}
+
 // ── COLLECT & SAVE ────────────────────────────────────
 function collectChanges() {
   var result = {};
@@ -522,7 +930,9 @@ function setPath(obj, path, val) {
 }
 
 async function doSave() {
-  if (!state.id || !dirHandle) return;
+  if (!dirHandle) return;
+  if (mode === 'nav') return doSaveNav();
+  if (mode !== 'page' || !state.id) return;
   var btn = document.getElementById('saveBtn');
   btn.disabled = true;
   btn.textContent = '⏳ Kaydediliyor…';
@@ -537,6 +947,28 @@ async function doSave() {
     document.querySelectorAll('.field.changed').forEach(function(f){ f.classList.remove('changed'); });
     // Refresh state
     state.data = getContent(state.id, newHtml);
+  } catch(e) {
+    toast('✗ Hata: ' + e.message, 'err');
+  } finally {
+    btn.disabled = !state.dirty;
+    btn.textContent = '💾 Kaydet';
+  }
+}
+
+async function doSaveNav() {
+  var btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Kaydediliyor…';
+  try {
+    var changes = collectChanges();
+    var labels = NAV_KEYS.map(function(key, i) {
+      return (changes.nav && changes.nav[i] !== undefined) ? changes.nav[i] : navState[i];
+    });
+    var n = await saveNavLabels(labels);
+    navState = labels;
+    toast('✓ ' + n + ' dosya güncellendi', 'ok');
+    setDirty(false);
+    document.querySelectorAll('.field.changed').forEach(function(f){ f.classList.remove('changed'); });
   } catch(e) {
     toast('✗ Hata: ' + e.message, 'err');
   } finally {
